@@ -222,3 +222,6 @@ __marimo__/
 
 # Django stuff
 staticfiles/
+
+# Cowork/AI agent instructions (local context, not project code)
+AGENTS.md
