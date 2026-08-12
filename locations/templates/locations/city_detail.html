@@ -73,7 +73,7 @@
                 <h2 class="text-lg font-semibold mb-1">📍 {{ location.name }}</h2>
                 {% if location.description %}
                     <!-- urlize превращает голые ссылки в кликабельные <a>-теги; [&_a]:underline подчёркивает их -->
-                    <p class="text-stone-600 dark:text-stone-300 text-sm mb-3 [&_a]:underline">{{ location.description|urlize }}</p>
+                    <p class="text-stone-600 dark:text-stone-300 text-sm mb-3 [&_a]:underline">{{ location.description|urlize|linebreaksbr }}</p>
                 {% endif %}
 
                 <!-- Теги типов пинов: у каждого типа свой цвет и эмодзи -->
