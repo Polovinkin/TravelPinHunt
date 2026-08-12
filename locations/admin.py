@@ -326,9 +326,9 @@ class LocationAdminForm(forms.ModelForm):
 @admin.register(Location)
 class LocationAdmin(admin.ModelAdmin):
     form = LocationAdminForm
-    list_display = ["name", "city", "created_at"]
+    list_display = ["name", "city", "source_column", "created_at"]
     search_fields = ["name", "description", "city__name"]  # city__name — чтобы искать локации по названию города
-    list_filter = ["pin_types"]
+    list_filter = ["pin_types", "source"]
     readonly_fields = ["lat", "lng", "created_at", "updated_at"]  # координаты редактируются только через поле coordinates
     autocomplete_fields = ["city"]
     fieldsets = [
@@ -355,6 +355,16 @@ class LocationAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         # select_related избегает N+1: достаём локации сразу с их городами одним JOIN запросом
         return super().get_queryset(request).select_related("city", "city__country")
+
+    @admin.display(description="Source", ordering="source")
+    def source_column(self, obj):
+        # показывает, кто добавил локацию: сам Дима (Owner) или заявка сообщества (Community),
+        # для community дополнительно показываем ник, если он указан в заявке
+        if obj.source == Location.SOURCE_COMMUNITY:
+            if obj.contributor_nickname:
+                return f"👤 {obj.contributor_nickname}"
+            return "👤 Community"
+        return "Owner"
 
     def _city_flags_context(self):
         # {city_id: flag_emoji} для JS, который рисует флаг рядом с полем City
