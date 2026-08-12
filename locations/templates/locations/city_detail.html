@@ -90,7 +90,7 @@
                     {% if location.source == "community" %}
                         <!-- Отдельная плашка вклада сообщества: квадратная рамка (без rounded), в отличие от круглых тегов типов пинов выше -->
                         <span class="text-stone-300 dark:text-stone-600">·</span>
-                        <span class="bg-amber-50 border border-amber-200 text-amber-800 dark:bg-amber-900/20 dark:border-amber-700/50 dark:text-amber-200 text-xs font-medium px-2 py-1">{% if location.contributor_nickname %}👤 by {{ location.contributor_nickname }}{% else %}👤 Community-added{% endif %}</span>
+                        <span class="bg-amber-50 border border-amber-200 text-amber-800 dark:bg-amber-900/20 dark:border-amber-700/50 dark:text-amber-200 text-xs font-medium px-2 py-1">{% if location.contributor_nickname %}👤 by {{ location.contributor_nickname }}{% else %}👥 Community-added{% endif %}</span>
                     {% endif %}
                 </div>
             </div>

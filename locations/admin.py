@@ -363,7 +363,7 @@ class LocationAdmin(admin.ModelAdmin):
         if obj.source == Location.SOURCE_COMMUNITY:
             if obj.contributor_nickname:
                 return f"👤 {obj.contributor_nickname}"
-            return "👤 Community"
+            return "👥 Community"  # значок нескольких людей — контрибьютор без указанного ника
         return "Owner"
 
     def _city_flags_context(self):
