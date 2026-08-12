@@ -134,7 +134,7 @@
                 {% if form.contributor_nickname.errors %}
                     <p class="text-xs text-red-500 dark:text-red-400 mt-1">{{ form.contributor_nickname.errors.0 }}</p>
                 {% else %}
-                    <p class="text-xs text-stone-400 dark:text-stone-500 mt-1">We'll credit you under this nickname in the <a href="{% url 'locations:contributors' %}" class="underline hover:text-amber-700 dark:hover:text-amber-400">Contributors</a> list on the site.</p>
+                    <p class="text-xs text-stone-400 dark:text-stone-500 mt-1">We'll credit you under this nickname right on the location's card once it's added, and in the <a href="{% url 'locations:contributors' %}" class="underline hover:text-amber-700 dark:hover:text-amber-400">Contributors</a> list.</p>
                 {% endif %}
             </div>
 
