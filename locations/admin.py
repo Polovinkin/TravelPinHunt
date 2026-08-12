@@ -335,6 +335,7 @@ class LocationAdmin(admin.ModelAdmin):
         (None, {"fields": ["name", "city", "description"]}),
         ("Location", {"fields": ["google_maps_url", ("coordinates", "lat", "lng")]}),
         ("Pin types", {"fields": ["pin_types"]}),
+        ("Contributor", {"fields": [("source", "contributor_nickname")]}),
         ("Meta", {"fields": [("created_at", "updated_at")]}),
     ]
 
@@ -476,6 +477,8 @@ class LocationSubmissionAdmin(admin.ModelAdmin):
             "name": obj.location_name,
             "description": obj.description,
             "google_maps_url": obj.google_maps_url,
+            "source": Location.SOURCE_COMMUNITY,
+            "contributor_nickname": obj.contributor_nickname,
         }
         if pin_type_ids:
             # Django admin ждёт m2m initial data одной строкой через запятую, не повторяющимися ключами

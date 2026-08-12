@@ -140,6 +140,14 @@ class PinType(models.Model):
 class Location(models.Model):
     """Место где продают пины: магазин, сувенирная лавка, музей и т.д."""
 
+    SOURCE_OWNER = "owner"
+    SOURCE_COMMUNITY = "community"
+
+    SOURCE_CHOICES = [
+        (SOURCE_OWNER, "Site owner"),
+        (SOURCE_COMMUNITY, "Community"),
+    ]
+
     city = models.ForeignKey(City, on_delete=models.CASCADE, related_name="locations")
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
@@ -150,6 +158,14 @@ class Location(models.Model):
         blank=True, help_text="Used instead of Google Maps for locations in Russia, where Google Maps works poorly"
     )
     pin_types = models.ManyToManyField(PinType, blank=True)  # у одного места может быть несколько типов пинов
+    source = models.CharField(
+        max_length=20, choices=SOURCE_CHOICES, default=SOURCE_OWNER,
+        help_text="Site owner: no badge shown on the site. Community: shows a contribution badge on the location card.",
+    )
+    contributor_nickname = models.CharField(
+        max_length=50, blank=True,
+        help_text="Shown in the community badge on the site, e.g. 'Added by Anna'. Leave blank to show an unnamed 'Community-added' badge.",
+    )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created at (UTC)")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Updated at (UTC)")
 

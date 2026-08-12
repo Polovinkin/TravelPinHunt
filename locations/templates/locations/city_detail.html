@@ -77,7 +77,7 @@
                 {% endif %}
 
                 <!-- Теги типов пинов: у каждого типа свой цвет и эмодзи -->
-                <div class="flex flex-wrap gap-2">
+                <div class="flex flex-wrap items-center gap-2">
                     {% for pin_type in location.pin_types.all %}
                         {% if pin_type.name == "city" %}
                             <span class="bg-blue-50 text-blue-700 dark:bg-blue-950/50 dark:text-blue-300 text-xs font-medium px-2 py-1 rounded-full">🏙️ {{ pin_type }}s</span>
@@ -87,6 +87,11 @@
                             <span class="bg-purple-50 text-purple-700 dark:bg-purple-950/50 dark:text-purple-300 text-xs font-medium px-2 py-1 rounded-full">🏛️ {{ pin_type }}s</span>
                         {% endif %}
                     {% endfor %}
+                    {% if location.source == "community" %}
+                        <!-- Отдельная плашка вклада сообщества: квадратная рамка (без rounded), в отличие от круглых тегов типов пинов выше -->
+                        <span class="text-stone-300 dark:text-stone-600">·</span>
+                        <span class="bg-amber-50 border border-amber-200 text-amber-800 dark:bg-amber-900/20 dark:border-amber-700/50 dark:text-amber-200 text-xs font-medium px-2 py-1">{% if location.contributor_nickname %}👤 by {{ location.contributor_nickname }}{% else %}👤 Community-added{% endif %}</span>
+                    {% endif %}
                 </div>
             </div>
         {% empty %}
