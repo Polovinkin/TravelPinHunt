@@ -81,6 +81,11 @@ class City(models.Model):
     location_type = models.CharField(
         max_length=50, blank=True, help_text="Optional special location type, e.g. Island, National Park"
     )
+    youtube_walk_url = models.URLField(
+        max_length=500,
+        blank=True,
+        help_text="Optional Vagabondity walking tour for this city or place",
+    )
 
     def save(self, *args, **kwargs):
         # генерируем slug из названия города один раз при создании

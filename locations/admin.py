@@ -205,6 +205,7 @@ class CityAdmin(admin.ModelAdmin):
         "state",  # поле видно только для стран с has_states=True — см. admin_city_state.js
         ("name", "is_capital"),  # кортеж = два поля в одной строке
         "location_type",
+        "youtube_walk_url",
         "slug",
     ]
 
