@@ -157,6 +157,7 @@ class CityAdminForm(forms.ModelForm):
         fields = "__all__"
         widgets = {
             "name": forms.TextInput(attrs={"autocomplete": "off"}),
+            "youtube_walk_url": forms.URLInput(attrs={"autocomplete": "off"}),
         }
 
     def clean(self):
