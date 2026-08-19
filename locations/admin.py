@@ -155,6 +155,9 @@ class CityAdminForm(forms.ModelForm):
     class Meta:
         model = City
         fields = "__all__"
+        labels = {
+            "youtube_walk_url": "YouTube walk URL",
+        }
         widgets = {
             "name": forms.TextInput(attrs={"autocomplete": "off"}),
             "youtube_walk_url": forms.URLInput(attrs={"autocomplete": "off"}),
@@ -205,8 +208,8 @@ class CityAdmin(admin.ModelAdmin):
         "country",
         "state",  # поле видно только для стран с has_states=True — см. admin_city_state.js
         ("name", "is_capital"),  # кортеж = два поля в одной строке
-        "location_type",
         "youtube_walk_url",
+        "location_type",
         "slug",
     ]
 
