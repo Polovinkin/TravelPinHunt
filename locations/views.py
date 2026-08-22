@@ -21,9 +21,13 @@ COUNTRY_ALIASES = {
 
 def home(request):
     # только страны у которых есть хотя бы одна локация (не показываем пустые)
-    countries = Country.objects.filter(
-        cities__locations__isnull=False
-    ).distinct().order_by("name")
+    # Evaluating countries QuerySet into a list here avoids a redundant SQL COUNT(*) query
+    # when computing country_count, saving one DB query per home page render.
+    countries = list(
+        Country.objects.filter(cities__locations__isnull=False)
+        .distinct()
+        .order_by("name")
+    )
 
     query = request.GET.get("q", "").strip()
     results = []
@@ -34,7 +38,7 @@ def home(request):
     ).order_by("-created_at").first()
 
     location_count = Location.objects.count()
-    country_count = countries.count()
+    country_count = len(countries)
 
     if query:
         # ищем по вхождению строки в название города или страны (case-insensitive)
@@ -208,7 +212,13 @@ def contributors(request):
         .exclude(contributor_nickname="")
         .values("contributor_nickname", "country_name")
     )
-    country_flags = {country.name.lower(): country.flag for country in Country.objects.all()}
+
+    # Performance optimization: fetch only name and code dicts instead of constructing full Country instances.
+    # Dynamically compute emoji flags from uppercase ISO code, saving memory and model instantiation overhead.
+    country_flags = {
+        c["name"].lower(): "".join(chr(0x1F1E6 + ord(char) - ord("A")) for char in c["code"].upper())
+        for c in Country.objects.values("name", "code")
+    }
 
     def resolve_flag(country_name):
         # Берём часть до запятой на случай "USA, California" — сам штат/город игнорируем

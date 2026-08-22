@@ -1,0 +1,3 @@
+## 2025-05-18 - Avoid redundant SQL COUNT(*) queries and unnecessary model instantiations in Django views
+**Learning:** Calling `.count()` on a Django QuerySet that is subsequently evaluated and rendered (e.g. in a template) executes an extra SQL `COUNT(*)` query. Evaluating the QuerySet once into a list allows `len()` to be used in Python without an extra database hit. Additionally, fetching only field values using `.values("name", "code")` when building dictionary lookups avoids the overhead of instantiating full Django model instances and property evaluations.
+**Action:** When a QuerySet is rendered in full on a page, evaluate it into a list first before getting its count or length. Use `.values()` for lookup table generation.
