@@ -84,10 +84,9 @@ def country_detail(request, country_slug):
     # 404 если страна не найдена
     country = get_object_or_404(Country, slug=country_slug)
 
-    # Общее число локаций в стране — используется в meta description для более конкретного сниппета
-    total_locations = Location.objects.filter(city__country=country).count()
-
     if country.has_states:
+        # Общее число локаций в стране — используется в meta description для более конкретного сниппета
+        total_locations = Location.objects.filter(city__country=country).count()
         # "штатные" страны (например США): сначала показываем штаты, в которых есть
         # хотя бы один город с добавленными локациями — как на главной для стран
         states = State.objects.filter(country=country).annotate(
@@ -100,7 +99,13 @@ def country_detail(request, country_slug):
             "total_locations": total_locations,
         })
 
-    cities = City.objects.filter(country=country).annotate(location_count=Count("locations")).order_by("name")
+    cities = list(
+        City.objects.filter(country=country)
+        .select_related("country", "state")
+        .annotate(location_count=Count("locations"))
+        .order_by("name")
+    )
+    total_locations = sum(c.location_count for c in cities)
     return render(request, "locations/country_detail.html", {
         "country": country,
         "cities": cities,
@@ -121,11 +126,14 @@ def country_child_detail(request, country_slug, second_slug):
 
 def state_detail(request, country, state_slug):
     state = get_object_or_404(State, slug=state_slug, country=country)
-    cities = City.objects.filter(state=state).select_related("country", "state").annotate(
-        location_count=Count("locations")
-    ).order_by("name")
-    # Общее число локаций в штате — используется в meta description для более конкретного сниппета
-    total_locations = Location.objects.filter(city__state=state).count()
+    cities = list(
+        City.objects.filter(state=state)
+        .select_related("country", "state")
+        .annotate(location_count=Count("locations"))
+        .order_by("name")
+    )
+    # Общее число локаций в штате — вычисляется из суммарного количества по городам
+    total_locations = sum(c.location_count for c in cities)
     return render(request, "locations/state_detail.html", {
         "country": country,
         "state": state,
@@ -140,7 +148,7 @@ def city_detail(request, country, city_slug, state=None):
     lookup = {"slug": city_slug, "country": country}
     if state is not None:
         lookup["state"] = state
-    city = get_object_or_404(City, **lookup)
+    city = get_object_or_404(City.objects.select_related("country", "state"), **lookup)
     # сначала локации с бóльшим числом разных типов пинов (3 -> 2 -> 1), внутри группы — по имени
     locations = Location.objects.filter(city=city).prefetch_related("pin_types").annotate(
         pin_type_count=Count("pin_types", distinct=True)
