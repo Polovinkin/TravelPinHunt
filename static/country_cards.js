@@ -63,6 +63,21 @@ function extractFlagColors(flagEmoji) {
 document.addEventListener('DOMContentLoaded', function() {
     const paletteCache = new Map();
 
+    function resetLoadingCards() {
+        document.querySelectorAll('.flag-border-card.is-loading').forEach(card => {
+            card.classList.remove('is-loading');
+            card.getAnimations({ subtree: true }).forEach(animation => {
+                if (animation.animationName === 'country-border-spin') {
+                    animation.updatePlaybackRate(1);
+                }
+            });
+        });
+    }
+
+    // Reset before a document enters bfcache and after it is restored from it.
+    window.addEventListener('pagehide', resetLoadingCards);
+    window.addEventListener('pageshow', resetLoadingCards);
+
     document.querySelectorAll('.flag-border-card').forEach(card => {
         let colors = paletteCache.get(card.dataset.countrySlug);
         if (!colors) {
@@ -83,6 +98,24 @@ document.addEventListener('DOMContentLoaded', function() {
         card.addEventListener('mouseenter', function() {
             const randomAnimationOffset = Math.random() * 6;
             card.style.setProperty('--country-border-delay', `-${randomAnimationOffset}s`);
+        });
+
+        card.addEventListener('click', function(event) {
+            const usesModifiedClick = event.metaKey || event.ctrlKey || event.shiftKey || event.altKey;
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            if (event.defaultPrevented || event.button !== 0 || usesModifiedClick || prefersReducedMotion) return;
+
+            card.classList.add('is-loading');
+
+            // This changes the rate at the current animation position. It does
+            // not change CSS animation-duration, so the flag colours do not jump.
+            const borderAnimation = card.getAnimations({ subtree: true })
+                .find(animation => animation.animationName === 'country-border-spin');
+            if (borderAnimation) {
+                borderAnimation.play();
+                borderAnimation.updatePlaybackRate(6);
+            }
         });
     });
 });

@@ -40,14 +40,14 @@
 {% endblock %}
 
 {% block content %}
-    <!-- Breadcrumb: ссылка назад на страницу страны -->
-    <a href="/{{ country.slug }}/" class="text-sm text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 flex items-center gap-1 mb-3 -mt-3"><span>← {{ country.flag }} {{ country.name }}</span></a>
-
     <!-- Заголовок: название штата + счётчик городов -->
     <div class="mb-8">
         <!-- Код штата использует ту же квадратную цветную рамку, что и на странице страны. -->
         <h1 class="text-2xl sm:text-3xl font-bold flex items-center gap-3"><span class="text-3xl sm:text-4xl">{{ country.flag }}</span>{% if state.code %}<span class="text-xs sm:text-sm font-bold text-amber-800 bg-amber-50 border border-amber-300 dark:text-amber-300 dark:bg-amber-950/50 dark:border-amber-800 rounded px-1.5 py-0.5 tracking-wide">{{ state.code }}</span>{% endif %}Travel pins in {{ state.name }}</h1>
-        <p class="text-stone-500 dark:text-stone-400 mt-2">{{ cities|length }} cit{{ cities|length|pluralize:"y,ies" }} with pin selling locations</p>
+        <div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm">
+            <a href="/{{ country.slug }}/" class="inline-flex items-center gap-1 rounded-md border border-stone-300 bg-white px-2.5 py-1 font-medium text-stone-700 shadow-sm transition duration-150 hover:bg-amber-50 hover:text-amber-900 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 active:translate-y-px active:shadow-inner dark:border-stone-600 dark:bg-stone-800 dark:text-stone-200 dark:hover:bg-stone-700 dark:hover:text-amber-300 dark:focus-visible:ring-offset-stone-900"><span>← {{ country.name }}</span></a>
+            <p class="text-stone-500 dark:text-stone-400">{{ cities|length }} cit{{ cities|length|pluralize:"y,ies" }} with pin selling locations</p>
+        </div>
     </div>
 
     <!-- Сетка городов: 2 колонки на мобиле, 3 на десктопе -->

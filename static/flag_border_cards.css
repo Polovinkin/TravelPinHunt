@@ -12,6 +12,8 @@
     --country-flag-colors: transparent, transparent;
     --country-border-delay: 0s;
     position: relative;
+    transition: transform 0.12s ease-out, box-shadow 0.12s ease-out;
+    touch-action: manipulation;
 }
 
 .flag-border-card::before {
@@ -49,8 +51,30 @@
     animation-play-state: running;
 }
 
+/* The same flag-colour cue is available while a card is pressed, including on touch screens. */
+.flag-border-card:active {
+    transform: translateY(2px) scale(0.975);
+    box-shadow: inset 0 2px 5px rgba(41, 37, 36, 0.18);
+}
+
+.flag-border-card:active::before {
+    opacity: 1;
+    animation-play-state: running;
+}
+
+/* country_cards.js applies this after a normal click without delaying navigation. */
+.flag-border-card.is-loading::before {
+    opacity: 1;
+    animation-play-state: running;
+}
+
 @media (prefers-reduced-motion: reduce) {
     .flag-border-card::before {
         animation: none;
+    }
+
+    .flag-border-card:active {
+        transform: none;
+        box-shadow: none;
     }
 }

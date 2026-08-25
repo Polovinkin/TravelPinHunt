@@ -52,17 +52,8 @@
 {% endblock %}
 
 {% block content %}
-    <!-- Breadcrumb: ссылка назад на страну, и на штат — если он есть у этого города -->
-    <div class="text-sm text-stone-500 dark:text-stone-400 flex items-center gap-1 mb-3 -mt-3 flex-wrap">
-        <a href="/{{ city.country.slug }}/" class="hover:text-stone-700 dark:hover:text-stone-200 flex items-center gap-1"><span>← {{ city.country.flag }} {{ city.country.name }}</span></a>
-        {% if city.state %}
-            <span>/</span>
-            <a href="{{ city.state.url }}" class="hover:text-stone-700 dark:hover:text-stone-200">{{ city.state.name }}</a>
-        {% endif %}
-    </div>
-
     <!-- Заголовок: название города + тип локации (если есть) + счётчик мест -->
-    <div class="mb-8">
+    <div class="{% if city.youtube_walk_url %}mb-4{% else %}mb-8{% endif %}">
         <div class="flex items-center gap-3">
             <!-- Код штата использует ту же квадратную цветную рамку, что и на странице страны. -->
             <!-- Не повторяем страну, если её название совпадает с названием города (например, Сингапур, Макао, Гонконг). -->
@@ -74,12 +65,18 @@
                 </span>
             {% endif %}
         </div>
-        <!-- Pluralize: "1 pin location" vs "3 pin locations" -->
-        <p class="text-stone-500 dark:text-stone-400 mt-2">{{ locations|length }} pin selling location{{ locations|length|pluralize }}</p>
+        <!-- Pluralize: "1 pin location" vs "3 pin locations"; the country button shares this secondary row. -->
+        <div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm">
+            <a href="/{{ city.country.slug }}/" class="inline-flex items-center gap-1 rounded-md border border-stone-300 bg-white px-2.5 py-1 font-medium text-stone-700 shadow-sm transition duration-150 hover:bg-amber-50 hover:text-amber-900 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 active:translate-y-px active:shadow-inner dark:border-stone-600 dark:bg-stone-800 dark:text-stone-200 dark:hover:bg-stone-700 dark:hover:text-amber-300 dark:focus-visible:ring-offset-stone-900"><span>← {{ city.country.name }}</span></a>
+            <p class="text-stone-500 dark:text-stone-400">{{ locations|length }} pin selling location{{ locations|length|pluralize }}</p>
+            {% if city.state %}
+                <a href="{{ city.state.url }}" class="font-medium text-stone-500 hover:text-stone-700 hover:underline dark:text-stone-400 dark:hover:text-stone-200">{{ city.state.name }}</a>
+            {% endif %}
+        </div>
         {% if city.youtube_walk_url %}
             <!-- Ненавязчивая дополнительная ссылка на прогулку по этому городу или месту -->
             <a href="{{ city.youtube_walk_url }}" target="_blank" rel="noopener noreferrer"
-               class="inline-flex items-center gap-1.5 mt-1.5 text-sm text-stone-400 hover:text-stone-700 dark:text-stone-500 dark:hover:text-stone-200 transition">
+               class="inline-flex items-center gap-1.5 mt-4 text-sm text-stone-400 hover:text-stone-700 dark:text-stone-500 dark:hover:text-stone-200 transition">
                 <svg aria-hidden="true" class="w-4 h-4 text-red-600 dark:text-red-500 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
                 <span>See {{ city.name }} city walk</span>
                 <span aria-hidden="true">↗</span>

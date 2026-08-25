@@ -7,8 +7,8 @@
 {% block meta_description %}Community-built database of places where you can buy travel pins around the world, with direct links to Google Maps. Browse locations or submit one yourself.{% endblock %}
 
 {% block extra_head %}
-<link rel="stylesheet" href="{% static 'flag_border_cards.css' %}?v=5">
-<script src="{% static 'country_cards.js' %}?v=5" defer></script>
+<link rel="stylesheet" href="{% static 'flag_border_cards.css' %}?v=12">
+<script src="{% static 'country_cards.js' %}?v=11" defer></script>
 {% endblock %}
 
 {% block content %}
@@ -48,7 +48,7 @@
                 class="flex-1 bg-white border border-stone-300 dark:border-stone-600 dark:bg-stone-800 dark:text-stone-100 dark:placeholder-stone-500 rounded-lg px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-amber-500"
             >
             <button type="submit"
-                class="bg-amber-700 text-white px-6 py-3 rounded-lg font-medium hover:bg-amber-800 transition">
+                class="bg-amber-700 text-white px-6 py-3 rounded-lg font-medium hover:bg-amber-800 transition active:translate-y-px active:scale-[0.98] active:shadow-inner">
                 Search
             </button>
         </div>
