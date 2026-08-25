@@ -6,6 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- "DEV |" виден во вкладке браузера только локально (DEBUG=True), чтобы не перепутать с продом -->
     <title>{% if IS_DEV %}DEV | {% endif %}{% block title %}TravelPinHunt{% endblock %}</title>
+    <!-- Canonical URL ignores tracking parameters and identifies the primary indexable page. -->
+    <link rel="canonical" href="https://travelpinhunt.com{{ request.path }}">
+    <!-- Internal search result pages are useful to visitors, but should not compete with city and country pages in search. -->
+    {% if request.GET.q %}
+        <meta name="robots" content="noindex,follow">
+    {% endif %}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,400;6..12,500;6..12,600;6..12,700&display=swap" rel="stylesheet">
