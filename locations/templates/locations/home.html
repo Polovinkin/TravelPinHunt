@@ -160,8 +160,8 @@
                 {% for country in countries %}
                     <a href="/{{ country.slug }}/"
                        class="flex items-center gap-2 bg-white border border-stone-200 dark:bg-stone-800 dark:border-stone-700 rounded-lg px-4 py-3 [@media(hover:hover)]:hover:border-amber-600 dark:[@media(hover:hover)]:hover:border-amber-500 [@media(hover:hover)]:hover:shadow-sm transition">
-                        <span class="text-2xl">{{ country.flag }}</span>
-                        <span class="font-medium">{{ country.name }}</span>
+                        <span class="text-lg font-medium">{{ country.name }}</span>
+                        <span class="text-2xl ml-auto">{{ country.flag }}</span>
                     </a>
                 {% endfor %}
             </div>
