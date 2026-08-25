@@ -93,6 +93,7 @@
 
 <!-- Логика переключения темы и ротации флагов вынесена в статический файл — не дублируется в HTML и кешируется браузером между переходами -->
 <script src="{% static 'flags.js' %}"></script>
+{% block extra_head %}{% endblock %}
 </head>
 
 <body class="font-sans bg-[#fffdf7] text-stone-900 dark:bg-stone-950 dark:text-stone-100 min-h-screen">

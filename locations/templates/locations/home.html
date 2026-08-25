@@ -6,6 +6,11 @@
 <!-- Meta description dedicated to the homepage, otherwise Google tends to grab the stats block text instead -->
 {% block meta_description %}Community-built database of places where you can buy travel pins around the world, with direct links to Google Maps. Browse locations or submit one yourself.{% endblock %}
 
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'flag_border_cards.css' %}?v=5">
+<script src="{% static 'country_cards.js' %}?v=5" defer></script>
+{% endblock %}
+
 {% block content %}
     <!-- Баннер с фото коллекции пинов -->
     <img src="{% static 'images/wider_banner_2000x400.webp' %}" alt="Travel pins collection"
@@ -159,7 +164,9 @@
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                 {% for country in countries %}
                     <a href="/{{ country.slug }}/"
-                       class="flex items-center gap-2 bg-white border border-stone-200 dark:bg-stone-800 dark:border-stone-700 rounded-lg px-4 py-3 [@media(hover:hover)]:hover:border-amber-600 dark:[@media(hover:hover)]:hover:border-amber-500 [@media(hover:hover)]:hover:shadow-sm transition">
+                       class="flag-border-card flex items-center gap-2 bg-white border border-stone-200 dark:bg-stone-800 dark:border-stone-700 rounded-lg px-4 py-3"
+                       data-country-slug="{{ country.slug }}"
+                       data-country-flag="{{ country.flag }}">
                         <span class="text-lg font-medium">{{ country.name }}</span>
                         <span class="text-2xl ml-auto">{{ country.flag }}</span>
                     </a>

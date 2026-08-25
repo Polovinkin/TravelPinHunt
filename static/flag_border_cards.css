@@ -1,0 +1,56 @@
+@property --country-border-angle {
+    syntax: "<angle>";
+    inherits: false;
+    initial-value: 0deg;
+}
+
+@keyframes country-border-spin {
+    to { --country-border-angle: 360deg; }
+}
+
+.flag-border-card {
+    --country-flag-colors: transparent, transparent;
+    --country-border-delay: 0s;
+    position: relative;
+}
+
+.flag-border-card::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    padding: 1px;
+    border-radius: inherit;
+    background: conic-gradient(
+        from var(--country-border-angle),
+        var(--country-flag-colors)
+    );
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+    animation: country-border-spin 6s linear infinite;
+    animation-delay: var(--country-border-delay);
+    animation-play-state: paused;
+    -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+}
+
+@media (hover: hover) {
+    .flag-border-card:hover::before {
+        opacity: 1;
+        animation-play-state: running;
+    }
+}
+
+.flag-border-card:focus-visible::before {
+    opacity: 1;
+    animation-play-state: running;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .flag-border-card::before {
+        animation: none;
+    }
+}
