@@ -9,6 +9,36 @@
 {% include "locations/_og_tags.html" with og_location=state.name|add:", "|add:country.name og_url="https://travelpinhunt.com"|add:state.url %}
 {% endblock %}
 
+{% block structured_data %}
+<!-- Breadcrumb markup mirrors the state page's place in the site hierarchy. -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "TravelPinHunt",
+            "item": "https://travelpinhunt.com/"
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "{{ country.name|escapejs }}",
+            "item": "https://travelpinhunt.com{{ country.url }}"
+        },
+        {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "{{ state.name|escapejs }}",
+            "item": "https://travelpinhunt.com{{ state.url }}"
+        }
+    ]
+}
+</script>
+{% endblock %}
+
 {% block content %}
     <!-- Breadcrumb: ссылка назад на страницу страны -->
     <a href="/{{ country.slug }}/" class="text-sm text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 flex items-center gap-1 mb-3 -mt-3"><span>← {{ country.flag }} {{ country.name }}</span></a>

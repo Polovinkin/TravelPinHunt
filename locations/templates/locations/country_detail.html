@@ -9,6 +9,30 @@
 {% include "locations/_og_tags.html" with og_location=country.name og_url="https://travelpinhunt.com"|add:country.url %}
 {% endblock %}
 
+{% block structured_data %}
+<!-- Breadcrumb markup mirrors the country page's place in the site hierarchy. -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "TravelPinHunt",
+            "item": "https://travelpinhunt.com/"
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "{{ country.name|escapejs }}",
+            "item": "https://travelpinhunt.com{{ country.url }}"
+        }
+    ]
+}
+</script>
+{% endblock %}
+
 {% block content %}
     <!-- Заголовок: флаг + название страны + счётчик штатов или городов -->
     <div class="mb-8">
