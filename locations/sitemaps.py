@@ -24,7 +24,9 @@ class CountrySitemap(Sitemap):
     priority = 0.8
 
     def items(self):
-        return Country.objects.all()
+        # Не отправляем поисковикам пустые страницы стран: в sitemap должны быть
+        # только страны, где есть хотя бы одна локация для путешественника.
+        return Country.objects.filter(cities__locations__isnull=False).distinct()
 
     def location(self, obj):
         return f"/{obj.slug}/"
