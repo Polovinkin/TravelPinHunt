@@ -11,21 +11,12 @@
 
 {% block content %}
     <!-- Breadcrumb: ссылка назад на страницу страны -->
-    <a href="/{{ country.slug }}/" class="text-sm text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 flex items-center gap-1 mb-3 -mt-3">
-        ← {{ country.flag }} {{ country.name }}
-    </a>
+    <a href="/{{ country.slug }}/" class="text-sm text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 flex items-center gap-1 mb-3 -mt-3"><span>← {{ country.flag }} {{ country.name }}</span></a>
 
     <!-- Заголовок: название штата + счётчик городов -->
     <div class="mb-8">
-        <h1 class="text-2xl sm:text-3xl font-bold flex items-center gap-3">
-            <span class="text-3xl sm:text-4xl">{{ country.flag }}</span>
-            {% if state.code %}
-                <!-- Код штата — та же квадратная цветная рамка, что и на странице страны -->
-                <span class="text-xs sm:text-sm font-bold text-amber-800 bg-amber-50 border border-amber-300 dark:text-amber-300 dark:bg-amber-950/50 dark:border-amber-800 rounded px-1.5 py-0.5 tracking-wide">
-                    {{ state.code }}
-                </span>
-            {% endif %}
-            Travel pins in {{ state.name }}</h1>
+        <!-- Код штата использует ту же квадратную цветную рамку, что и на странице страны. -->
+        <h1 class="text-2xl sm:text-3xl font-bold flex items-center gap-3"><span class="text-3xl sm:text-4xl">{{ country.flag }}</span>{% if state.code %}<span class="text-xs sm:text-sm font-bold text-amber-800 bg-amber-50 border border-amber-300 dark:text-amber-300 dark:bg-amber-950/50 dark:border-amber-800 rounded px-1.5 py-0.5 tracking-wide">{{ state.code }}</span>{% endif %}Travel pins in {{ state.name }}</h1>
         <p class="text-stone-500 dark:text-stone-400 mt-2">{{ cities|length }} cit{{ cities|length|pluralize:"y,ies" }} with pin selling locations</p>
     </div>
 
