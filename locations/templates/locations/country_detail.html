@@ -55,7 +55,9 @@
             {% for state in states %}
                 <!-- Карточка-ссылка на страницу штата -->
                 <a href="{{ state.url }}"
-                class="relative bg-white border border-stone-200 dark:bg-stone-800 dark:border-stone-700 rounded-lg pl-3 pr-4 py-5 sm:pl-4 sm:pr-6 sm:py-6 text-base sm:text-lg font-medium [@media(hover:hover)]:hover:border-amber-600 dark:[@media(hover:hover)]:hover:border-amber-500 [@media(hover:hover)]:hover:shadow-sm transition flex items-baseline justify-between gap-2">
+                class="flag-border-card relative bg-white border border-stone-200 dark:bg-stone-800 dark:border-stone-700 rounded-lg pl-3 pr-4 py-5 sm:pl-4 sm:pr-6 sm:py-6 text-base sm:text-lg font-medium flex items-baseline justify-between gap-2"
+                data-country-slug="{{ country.slug }}"
+                data-country-flag="{{ country.flag }}">
                     <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
                         {% if state.code %}
                             <!-- Код штата — квадратная цветная рамка, стоит перед названием (фиксированная ширина/высота, чтобы рамка всегда была квадратной, а не сжатой; левый отступ карточки равен отступу до названия) -->

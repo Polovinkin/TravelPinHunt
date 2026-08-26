@@ -5,6 +5,11 @@
 
 {% block meta_description %}See {{ total_locations }} shop{{ total_locations|pluralize }} selling travel pins in {{ state.name }}, {{ country.name }}, found by the community. Direct links to each location on Google Maps.{% endblock %}
 
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'flag_border_cards.css' %}?v=12">
+<script src="{% static 'country_cards.js' %}?v=11" defer></script>
+{% endblock %}
+
 {% block og_tags %}
 {% include "locations/_og_tags.html" with og_location=state.name|add:", "|add:country.name og_url="https://travelpinhunt.com"|add:state.url %}
 {% endblock %}
@@ -55,7 +60,9 @@
         {% for city in cities %}
             <!-- Карточка-ссылка на страницу города -->
             <a href="{{ city.url }}"
-            class="relative bg-white border border-stone-200 dark:bg-stone-800 dark:border-stone-700 rounded-lg px-4 py-5 sm:px-6 sm:py-6 text-lg font-medium [@media(hover:hover)]:hover:border-amber-600 dark:[@media(hover:hover)]:hover:border-amber-500 [@media(hover:hover)]:hover:shadow-sm transition flex items-baseline justify-between gap-2">
+            class="flag-border-card relative bg-white border border-stone-200 dark:bg-stone-800 dark:border-stone-700 rounded-lg px-4 py-5 sm:px-6 sm:py-6 text-lg font-medium flex items-baseline justify-between gap-2"
+            data-country-slug="{{ country.slug }}"
+            data-country-flag="{{ country.flag }}">
                 <!-- Звёздочка столицы — маленькая, в левом верхнем углу карточки, не занимает место в строке названия -->
                 {% if city.is_capital %}
                     <span title="Capital" class="absolute top-1.5 left-1.5 text-sm leading-none text-amber-500 dark:text-amber-400 cursor-default">★</span>
