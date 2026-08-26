@@ -29,10 +29,9 @@
             },
         };
     </script>
-    <!-- Ставим класс dark до отрисовки страницы, чтобы избежать мигания светлой темой (FOUC) -->
+    <!-- По умолчанию используем тёмную тему; явный выбор пользователя хранится в localStorage -->
     <script>
-        if (localStorage.theme === 'dark' ||
-            (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        if (localStorage.theme !== 'light') {
             document.documentElement.classList.add('dark');
         }
     </script>
