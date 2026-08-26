@@ -6,17 +6,18 @@
     <!-- Информационный блок: зачем сабмитить и что нужно указать -->
     <div class="bg-amber-50 border border-amber-200 dark:bg-amber-950/40 dark:border-amber-800 rounded-xl p-5 mb-8 text-sm text-amber-900 dark:text-amber-200">
         <p class="mb-3">
-            Finding places to buy travel pins in a new city can be surprisingly hard — that's exactly why this database exists! 
-            If you know a spot where fellow collectors can find pins, we'd love to hear about it.
+            Finding places to buy travel pins in a new city can be surprisingly hard - that's exactly why this database exists! <br>
+            If you know a spot where fellow collectors can find pins, we would love to hear about it!
         </p>
         <p class="mb-3">
-            We review all submissions regularly and add verified locations to the database. 
-            To keep the quality high, we ask for a bit of proof — a photo of the pins sold there works best, 
-            or a detailed description of what's available. The more specific, the better!
+            We review all submissions regularly and add verified locations to the database. <br>
+            To keep the quality high, we ask for a detailed description of what's available there, 
+            the more specific the description, the better! <br>
+            You can even add a photo of the pins sold as an additional proof and info.
         </p>
         <p>
-            A Google Maps link is required so others can actually find the place. Thanks for contributing — 
-            every submission makes pin hunting a little easier for every pin collecting enthusiast. 😌🙌
+            A Google Maps link is required so others can actually find the place. Thank you for contributing - 
+            every submission definitely makes pin hunting a little easier for every pin collecting enthusiast. 😌🙌
         </p>
     </div>
 
@@ -103,8 +104,8 @@
                         <span class="text-sm whitespace-nowrap">🏛️ Place<span class="hidden sm:inline"> pins</span></span>
                     </label>
                 </div>
-                <p class="text-xs text-stone-400 dark:text-stone-500 mt-1">What's the theme of pins being sold there? You can choose several.</p>
-                <p class="text-xs text-stone-400 dark:text-stone-500 mt-1"><b>City</b> - means that city name or it's symbol is shown somewhere on the pin.</p>
+                <p class="text-xs text-stone-400 dark:text-stone-500 mt-1"><b>What's the theme of pins being sold there?</b> You can choose several.</p>
+                <p class="text-xs text-stone-400 dark:text-stone-500 mt-1"><b>City</b> - pins is about the city or the location, city name or it's symbol is shown somewhere on the pin.</p>
                 <p class="text-xs text-stone-400 dark:text-stone-500 mt-1"><b>Country</b> - just a general pin about the country, it's symbols, or country's flag.</p>
                 <p class="text-xs text-stone-400 dark:text-stone-500 mt-1"><b>Place</b> - pin about some specific place there, like museum or attraction.</p>
             </div>
@@ -134,7 +135,7 @@
                 {% if form.contributor_nickname.errors %}
                     <p class="text-xs text-red-500 dark:text-red-400 mt-1">{{ form.contributor_nickname.errors.0 }}</p>
                 {% else %}
-                    <p class="text-xs text-stone-400 dark:text-stone-500 mt-1">We'll credit you under this nickname right on the location's card once it's added, and in the <a href="{% url 'locations:contributors' %}" class="underline hover:text-amber-700 dark:hover:text-amber-400">Contributors</a> list.</p>
+                    <p class="text-xs text-stone-400 dark:text-stone-500 mt-1"><b>We'll credit you under this nickname right on the location's card once it's added, and in the <a href="{% url 'locations:contributors' %}" class="underline hover:text-amber-700 dark:hover:text-amber-400">Contributors</a> list.</b></p>
                 {% endif %}
             </div>
 
