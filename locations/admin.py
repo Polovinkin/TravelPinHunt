@@ -201,6 +201,7 @@ class CityAdminForm(forms.ModelForm):
 @admin.register(City)
 class CityAdmin(admin.ModelAdmin):
     form = CityAdminForm
+    ordering = ["-id"]
     list_display = ["name", "flag_display", "country", "state", "slug", "is_capital", "location_count"]
     search_fields = ["name", "country__name"]
     list_filter = ["country"]
