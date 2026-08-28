@@ -97,6 +97,19 @@ fieldset.aligned.module .form-row:last-child {
     background-color: #78350f !important;
 }
 
+/* Основная кнопка сохранения должна сразу выделяться среди остальных действий формы. */
+.submit-row input[name="_save"] {
+    border-color: #49bc94 !important;
+    background-color: #49bc94 !important;
+    box-shadow: 0 1px 2px rgba(73, 188, 148, 0.35);
+}
+
+.submit-row input[name="_save"]:focus,
+.submit-row input[name="_save"]:hover {
+    border-color: #36ab83 !important;
+    background-color: #36ab83 !important;
+}
+
 /* эмодзи флага рядом с полем Country (City admin) / City (Location admin) — см. admin_country_flag.js.
    JS вставляет его после видимого select2-виджета и перед кнопками связанных объектов,
    поэтому флаг остаётся рядом с выбранным значением, а не у правого края строки. */
