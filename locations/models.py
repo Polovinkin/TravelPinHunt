@@ -53,6 +53,10 @@ class Country(models.Model):
         return "".join(chr(0x1F1E6 + ord(c) - ord("A")) for c in self.code.upper())
 
     @property
+    def uses_yandex_maps(self):
+        return (self.code or "").upper() == "RU" or self.slug == "south-ossetia"
+
+    @property
     def url(self):
         # для единообразия с State.url и City.url — упрощает сборку ссылок в шаблонах
         return f"/{self.slug}/"

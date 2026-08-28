@@ -96,8 +96,8 @@
         {% for location in locations %}
             <div class="bg-white border border-stone-200 dark:bg-stone-800 dark:border-stone-700 rounded-xl p-5 overflow-hidden">
                 <!-- Кнопка карт плавает вправо, текст её обтекает -->
-                <!-- В России Google Maps работает плохо, поэтому там показываем Яндекс.Карты вместо Google Maps -->
-                {% if city.country.code == "RU" %}
+                <!-- В России и Южной Осетии при наличии ссылки показываем Яндекс.Карты вместо Google Maps -->
+                {% if city.country.uses_yandex_maps %}
                     {% if location.yandex_maps_url %}
                         <a href="{{ location.yandex_maps_url }}" target="_blank"
                            class="float-right ml-3 mb-2 text-sm bg-stone-100 hover:bg-stone-200 dark:bg-stone-700 dark:hover:bg-stone-600 dark:text-stone-100 px-3 py-2 rounded-lg transition whitespace-nowrap flex items-center gap-1.5 group">

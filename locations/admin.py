@@ -314,6 +314,9 @@ class LocationAdminForm(forms.ModelForm):
             "lat": "Latitude (auto)",
             "lng": "Longitude (auto)",
         }
+        help_texts = {
+            "yandex_maps_url": "Used instead of Google Maps for locations in Russia and South Ossetia",
+        }
         widgets = {
             # ширина в 2 раза больше стандартной (vTextField ~20em) — имена локаций часто длинные
             "name": forms.TextInput(attrs={"autocomplete": "off", "style": "width: 50%; max-width: 40em;"}),
@@ -364,10 +367,10 @@ class LocationAdmin(admin.ModelAdmin):
     ]
 
     def get_fieldsets(self, request, obj=None):
-        # поле yandex_maps_url нужно только для локаций в России, поэтому не показываем
+        # поле yandex_maps_url нужно только для локаций в России и Южной Осетии, поэтому не показываем
         # его в форме для всех остальных стран, чтобы не захламлять админку
         fieldsets = super().get_fieldsets(request, obj)
-        if obj and obj.city.country.code == "RU":
+        if obj and obj.city.country.uses_yandex_maps:
             fieldsets = [
                 (title, {**opts, "fields": (
                     [*opts["fields"], "yandex_maps_url"] if title == "Location" else opts["fields"]
