@@ -43,9 +43,13 @@
     <div class="mb-8">
         <h1 class="text-3xl font-bold flex items-center gap-3"><span class="text-4xl">{{ country.flag }}</span>Travel pins in {{ country.name }}</h1>
         {% if country.has_states %}
-            <p class="text-stone-500 dark:text-stone-400 mt-2">{{ states|length }} state{{ states|length|pluralize }} with pin selling locations</p>
+            <p class="text-stone-500 dark:text-stone-400 mt-2">
+                {% if states_with_locations_count %}{{ states_with_locations_count }} state{{ states_with_locations_count|pluralize }} with pin selling locations{% endif %}{% if states_with_note_count %}{% if states_with_locations_count %} · {% endif %}{{ states_with_note_count }} state{{ states_with_note_count|pluralize }} with pin information{% endif %}
+            </p>
         {% else %}
-            <p class="text-stone-500 dark:text-stone-400 mt-2">{{ cities|length }} cit{{ cities|length|pluralize:"y,ies" }} with pin selling locations</p>
+            <p class="text-stone-500 dark:text-stone-400 mt-2">
+                {% if cities_with_locations_count %}{{ cities_with_locations_count }} cit{{ cities_with_locations_count|pluralize:"y,ies" }} with pin selling locations{% endif %}{% if cities_with_note_count %}{% if cities_with_locations_count %} · {% endif %}{{ cities_with_note_count }} cit{{ cities_with_note_count|pluralize:"y,ies" }} with pin information{% endif %}
+            </p>
         {% endif %}
     </div>
 

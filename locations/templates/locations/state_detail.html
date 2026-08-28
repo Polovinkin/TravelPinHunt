@@ -51,7 +51,7 @@
         <h1 class="text-2xl sm:text-3xl font-bold flex items-center gap-3"><span class="text-3xl sm:text-4xl">{{ country.flag }}</span>{% if state.code %}<span class="text-xs sm:text-sm font-bold text-amber-800 bg-amber-50 border border-amber-300 dark:text-amber-300 dark:bg-amber-950/50 dark:border-amber-800 rounded px-1.5 py-0.5 tracking-wide">{{ state.code }}</span>{% endif %}Travel pins in {{ state.name }}</h1>
         <div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm">
             <a href="/{{ country.slug }}/" class="inline-flex items-center gap-1 rounded-md border border-stone-300 bg-white px-2.5 py-1 font-medium text-stone-700 shadow-sm transition duration-150 hover:bg-amber-50 hover:text-amber-900 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 active:translate-y-px active:shadow-inner dark:border-stone-600 dark:bg-stone-800 dark:text-stone-200 dark:hover:bg-stone-700 dark:hover:text-amber-300 dark:focus-visible:ring-offset-stone-900"><span>← {{ country.name }}</span></a>
-            <p class="text-stone-500 dark:text-stone-400">{{ cities|length }} cit{{ cities|length|pluralize:"y,ies" }} with pin selling locations</p>
+            <p class="text-stone-500 dark:text-stone-400">{% if cities_with_locations_count %}{{ cities_with_locations_count }} cit{{ cities_with_locations_count|pluralize:"y,ies" }} with pin selling locations{% endif %}{% if cities_with_note_count %}{% if cities_with_locations_count %} · {% endif %}{{ cities_with_note_count }} cit{{ cities_with_note_count|pluralize:"y,ies" }} with pin information{% endif %}</p>
         </div>
     </div>
 
