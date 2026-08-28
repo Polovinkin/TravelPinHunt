@@ -129,3 +129,30 @@ fieldset.aligned.module .form-row:last-child {
     text-align: center;
     vertical-align: middle;
 }
+
+/* Блок ссылки на настройки кэша Cloudflare на главной странице админки. */
+#cloudflare-cache-module p {
+    margin: 12px;
+}
+
+.cloudflare-cache-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 9px 12px;
+    border-radius: 4px;
+    background: #16a34a;
+    color: #fff !important;
+    font-weight: bold;
+    text-align: center;
+}
+
+.cloudflare-cache-link span {
+    font-size: 18px;
+    line-height: 1;
+}
+
+.cloudflare-cache-link:hover {
+    background: #15803d;
+}
