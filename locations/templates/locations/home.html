@@ -167,7 +167,8 @@
                        class="flag-border-card flex items-center gap-2 bg-white border border-stone-200 dark:bg-stone-800 dark:border-stone-700 rounded-lg px-4 py-3"
                        data-country-slug="{{ country.slug }}"
                        data-country-flag="{{ country.flag }}"
-                       aria-label="{{ country.name }}">
+                       aria-label="{{ country.name }}"{% if country.slug == "bosnia-and-herzegovina" or country.slug == "north-macedonia" %}
+                       title="{{ country.name }}"{% endif %}>
                         <span class="text-lg font-medium">{% if country.slug == "bosnia-and-herzegovina" %}Bosnia{% elif country.slug == "north-macedonia" %}N Macedonia{% else %}{{ country.name }}{% endif %}</span>
                         <span class="text-2xl ml-auto">{% include "locations/_country_flag.html" with flag_class="" %}</span>
                     </a>
