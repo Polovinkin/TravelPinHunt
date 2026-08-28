@@ -157,10 +157,12 @@ class CityAdminForm(forms.ModelForm):
         fields = "__all__"
         labels = {
             "youtube_walk_url": "YouTube walk URL",
+            "note": "City note",
         }
         widgets = {
             "name": forms.TextInput(attrs={"autocomplete": "off"}),
             "youtube_walk_url": forms.URLInput(attrs={"autocomplete": "off"}),
+            "note": forms.Textarea(attrs={"rows": 4}),
         }
 
     def clean(self):
@@ -209,6 +211,7 @@ class CityAdmin(admin.ModelAdmin):
         "state",  # поле видно только для стран с has_states=True — см. admin_city_state.js
         ("name", "is_capital"),  # кортеж = два поля в одной строке
         "youtube_walk_url",
+        "note",
         "location_type",
         "slug",
     ]

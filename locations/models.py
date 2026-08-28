@@ -86,6 +86,10 @@ class City(models.Model):
         blank=True,
         help_text="Optional Vagabondity walking tour for this city or place",
     )
+    note = models.TextField(
+        blank=True,
+        help_text="Optional public note shown above this city's locations",
+    )
 
     def save(self, *args, **kwargs):
         # генерируем slug из названия города один раз при создании
