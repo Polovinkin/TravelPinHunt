@@ -2,7 +2,7 @@
 # Использует встроенный Django sitemaps framework — обновляется автоматически по мере
 # добавления новых стран/штатов/городов в базу, ничего вручную поддерживать не нужно.
 from django.contrib.sitemaps import Sitemap
-from django.db.models import Q
+from django.db.models import F, Q
 from django.urls import reverse
 from .models import Country, State, City
 
@@ -51,7 +51,11 @@ class CitySitemap(Sitemap):
     priority = 0.6
 
     def items(self):
-        return City.objects.select_related("country", "state").all()
+        return City.objects.select_related("country", "state").exclude(
+            country__opens_city_directly=True,
+            state__isnull=True,
+            name=F("country__name"),
+        )
 
     def location(self, obj):
         return obj.url

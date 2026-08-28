@@ -47,12 +47,12 @@ class HasLocationsFilter(admin.SimpleListFilter):
 
 @admin.register(Country)
 class CountryAdmin(admin.ModelAdmin):
-    list_display = ["flag_display", "name", "code", "slug", "city_count", "location_count", "has_states"]
+    list_display = ["flag_display", "name", "code", "slug", "city_count", "location_count", "has_states", "opens_city_directly"]
     list_display_links = ["name"]  # кликабельным должно быть название, а не флаг
-    list_filter = [HasLocationsFilter, "has_states"]
+    list_filter = [HasLocationsFilter, "has_states", "opens_city_directly"]
     search_fields = ["name", "code"]
     readonly_fields = ["slug"]  # slug генерируется автоматически из name, руками не редактируется
-    fields = ["name", ("code", "custom_flag"), "has_states", "slug"]
+    fields = ["name", ("code", "custom_flag"), "has_states", "opens_city_directly", "slug"]
 
     def get_queryset(self, request):
         # annotate вместо obj.cities... в цикле — иначе на 100+ странах будет N+1 запросов.

@@ -27,11 +27,26 @@ class Country(models.Model):
             "Country → State → City instead of Country → City"
         ),
     )
+    opens_city_directly = models.BooleanField(
+        default=False,
+        help_text=(
+            "Open the identically named city at this country's URL, for places such as Singapore."
+        ),
+    )
 
     def clean(self):
         super().clean()
         if not self.code and not self.custom_flag:
             raise ValidationError("Provide either an ISO country code or a custom flag image path.")
+        if self.opens_city_directly and self.has_states:
+            raise ValidationError("A country with states cannot open a city directly.")
+        if self.opens_city_directly and self.pk and not self.cities.filter(
+            name=self.name,
+            state__isnull=True,
+        ).exists():
+            raise ValidationError(
+                "To open a city directly, create a city with the same name first."
+            )
 
     def save(self, *args, **kwargs):
         # генерируем slug из названия страны один раз при создании
@@ -144,7 +159,17 @@ class City(models.Model):
     def url(self):
         if self.state_id:
             return f"/{self.country.slug}/{self.state.slug}/{self.slug}/"
+        if self.is_country_landing_page:
+            return self.country.url
         return f"/{self.country.slug}/{self.slug}/"
+
+    @property
+    def is_country_landing_page(self):
+        return (
+            self.country.opens_city_directly
+            and not self.state_id
+            and self.name == self.country.name
+        )
 
 
 class PinType(models.Model):

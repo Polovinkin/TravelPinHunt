@@ -90,6 +90,15 @@ def country_detail(request, country_slug):
     # 404 если страна не найдена
     country = get_object_or_404(Country, slug=country_slug)
 
+    if country.opens_city_directly:
+        city = get_object_or_404(
+            City.objects.select_related("country", "state"),
+            country=country,
+            name=country.name,
+            state__isnull=True,
+        )
+        return city_detail(request, country, city.slug)
+
     if country.has_states:
         # Общее число локаций в стране — используется в meta description для более конкретного сниппета
         total_locations = Location.objects.filter(city__country=country).count()
@@ -175,6 +184,8 @@ def city_detail(request, country, city_slug, state=None):
     if state is not None:
         lookup["state"] = state
     city = get_object_or_404(City.objects.select_related("country", "state"), **lookup)
+    if city.is_country_landing_page and request.path != city.url:
+        return redirect(city.url, permanent=True)
     # сначала локации с бóльшим числом разных типов пинов (3 -> 2 -> 1), внутри группы — по имени
     locations = Location.objects.filter(city=city).prefetch_related("pin_types").annotate(
         pin_type_count=Count("pin_types", distinct=True)
