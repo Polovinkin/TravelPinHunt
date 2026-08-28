@@ -1,7 +1,7 @@
-// Показывает эмодзи флага страны справа от select2-виджета и обновляет его при выборе
-// новой опции. Используется в двух местах:
-//   - City admin:     #id_country + JSON в <script id="country-flags-data"> ({country_id: flag})
-//   - Location admin: #id_city    + JSON в <script id="city-flags-data">    ({city_id: flag})
+// Показывает эмодзи или кастомное изображение флага страны рядом с Select2-виджетом
+// и обновляет его при смене выбранного значения. Используется в двух местах:
+//   - City admin:     #id_country + JSON в <script id="country-flags-data">
+//   - Location admin: #id_city    + JSON в <script id="city-flags-data">
 (function () {
     var CONFIGS = [
         { selectId: "id_country", dataId: "country-flags-data" },
@@ -45,7 +45,22 @@
 
             function updateFlag() {
                 var id = $select.val();
-                $flag.text(id && flags[id] ? flags[id] : "");
+                var flag = id && flags[id];
+                $flag.empty();
+                if (!flag) return;
+
+                if (typeof flag === "string") {
+                    $flag.text(flag);
+                } else if (flag.image_url) {
+                    $("<img>", {
+                        src: flag.image_url,
+                        alt: "",
+                        "aria-hidden": "true",
+                        class: "country-flag-preview-image",
+                    }).appendTo($flag);
+                } else {
+                    $flag.text(flag.emoji || "");
+                }
             }
 
             updateFlag();

@@ -247,11 +247,13 @@ def contributors(request):
         .values("contributor_nickname", "country_name")
     )
 
-    # fetch only name and code dicts instead of constructing full Country instances.
-    # Dynamically compute emoji flags from uppercase ISO code, saving memory and model instantiation overhead.
+    # Берём только данные, необходимые для отображения флагов, не создавая полноценные объекты Country.
     country_flags = {
-        c["name"].lower(): "".join(chr(0x1F1E6 + ord(char) - ord("A")) for char in c["code"].upper())
-        for c in Country.objects.values("name", "code")
+        c["name"].lower(): {
+            "emoji": "".join(chr(0x1F1E6 + ord(char) - ord("A")) for char in (c["code"] or "").upper()),
+            "custom_flag": c["custom_flag"],
+        }
+        for c in Country.objects.values("name", "code", "custom_flag")
     }
 
     def resolve_flag(country_name):
@@ -266,7 +268,7 @@ def contributors(request):
         entry = contributors_by_nickname.setdefault(nickname, {"submission_count": 0, "flags": []})
         entry["submission_count"] += 1
         flag = resolve_flag(row["country_name"])
-        if flag and flag not in entry["flags"]:
+        if flag and (flag["emoji"] or flag["custom_flag"]) and flag not in entry["flags"]:
             entry["flags"].append(flag)
 
     contributors_list = [

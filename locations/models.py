@@ -1,4 +1,5 @@
 # Структура базы данных. Тут находятся классы которые становятся таблицами в PostgreSQL. Это сердце приложения.
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
 from django.utils.text import slugify
@@ -6,7 +7,18 @@ from django.utils.text import slugify
 
 class Country(models.Model):
     name = models.CharField(max_length=30, help_text="Country name in English")
-    code = models.CharField(max_length=2, unique=True, help_text="ISO country code, for flags")  # ISO код: RU, FR, JP, TH
+    code = models.CharField(
+        max_length=2,
+        unique=True,
+        null=True,
+        blank=True,
+        help_text="Optional ISO country code, used to display a flag",
+    )
+    custom_flag = models.CharField(
+        max_length=100,
+        blank=True,
+        help_text="Optional custom flag image path inside static/, e.g. flags/south_ossetia.png",
+    )
     slug = models.SlugField(unique=True, blank=True, help_text="Generated automatically from the name")
     has_states = models.BooleanField(
         default=False,
@@ -15,6 +27,11 @@ class Country(models.Model):
             "Country → State → City instead of Country → City"
         ),
     )
+
+    def clean(self):
+        super().clean()
+        if not self.code and not self.custom_flag:
+            raise ValidationError("Provide either an ISO country code or a custom flag image path.")
 
     def save(self, *args, **kwargs):
         # генерируем slug из названия страны один раз при создании
@@ -31,8 +48,8 @@ class Country(models.Model):
 
     @property
     def flag(self):
-        # конвертируем ISO код в эмодзи флага через Unicode regional indicators
-        # 'A' = 0x1F1E6, 'B' = 0x1F1E7, и т.д. — браузер склеивает два символа в один флаг
+        if not self.code:
+            return ""
         return "".join(chr(0x1F1E6 + ord(c) - ord("A")) for c in self.code.upper())
 
     @property

@@ -84,6 +84,8 @@ const extraFlags = [
     { name: "latvia",               t: "#9E3039", p: "#FFFFFF", h: "#9E3039" },
     { name: "malta",                t: "#FFFFFF", p: "#CF142B", h: "#CF142B" },
     { name: "north-macedonia",      t: "#CE2028", p: "#F7DB17", h: "#CE2028" },
+    { name: "north-cyprus",         t: "#FFFFFF", p: "#E30A17", h: "#FFFFFF" },
+    { name: "south-ossetia",        t: "#FFFFFF", p: "#E30A17", h: "#FFCC00" },
     // Азия
     { name: "cambodia",             t: "#032EA1", p: "#E00025", h: "#032EA1" },
     { name: "hong-kong",            t: "#DE2910", p: "#FFFFFF", h: "#DE2910" },

@@ -1,0 +1,6 @@
+{% load static %}
+{% if country.custom_flag %}
+<img src="{% static country.custom_flag %}" alt="" aria-hidden="true" class="block h-[0.73em] w-[1em] object-contain {{ flag_class }}">
+{% else %}
+{{ country.flag }}
+{% endif %}

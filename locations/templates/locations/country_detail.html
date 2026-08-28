@@ -41,7 +41,7 @@
 {% block content %}
     <!-- Заголовок: флаг + название страны + счётчик штатов или городов -->
     <div class="mb-8">
-        <h1 class="text-3xl font-bold flex items-center gap-3"><span class="text-4xl">{{ country.flag }}</span>Travel pins in {{ country.name }}</h1>
+        <h1 class="text-3xl font-bold flex items-center gap-3"><span class="text-4xl">{% include "locations/_country_flag.html" with flag_class="" %}</span>Travel pins in {{ country.name }}</h1>
         {% if country.has_states %}
             <p class="text-stone-500 dark:text-stone-400 mt-2">
                 {% if states_with_locations_count %}{{ states_with_locations_count }} state{{ states_with_locations_count|pluralize }} with pin selling locations{% endif %}{% if states_with_note_count %}{% if states_with_locations_count %} · {% endif %}{{ states_with_note_count }} state{{ states_with_note_count|pluralize }} with pin information{% endif %}
@@ -52,6 +52,13 @@
             </p>
         {% endif %}
     </div>
+
+    {% if country.custom_flag %}
+        <aside class="mb-8 flex gap-3 rounded-xl border border-stone-200 bg-stone-50 p-4 text-sm text-stone-600 dark:border-stone-700 dark:bg-stone-800/70 dark:text-stone-300" aria-label="Location status note">
+            <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-stone-400 text-xs font-bold text-stone-500 dark:border-stone-500 dark:text-stone-400">i</span>
+            <p><span class="font-semibold text-stone-700 dark:text-stone-200">A note on territorial status.</span> TravelPinHunt is a practical guide to places where travel pins can be found. Listing {{ country.name }} separately reflects how locations are identified and navigated in practice; it does not express a position of the site author or contributors on sovereignty, recognition, borders, or territorial status.</p>
+        </aside>
+    {% endif %}
 
     <!-- Сетка штатов (для "штатных" стран, например США) или городов (для всех остальных): 2 колонки на мобиле, 3 на десктопе -->
     <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">

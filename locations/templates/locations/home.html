@@ -93,7 +93,7 @@
                         {% for country in results.countries %}
                             <a href="/{{ country.slug }}/"
                                class="flex items-center gap-2 bg-white border border-stone-200 dark:bg-stone-800 dark:border-stone-700 rounded-lg px-4 py-3 [@media(hover:hover)]:hover:border-amber-600 dark:[@media(hover:hover)]:hover:border-amber-500 [@media(hover:hover)]:hover:shadow-sm transition">
-                                <span class="text-2xl">{{ country.flag }}</span>
+                                <span class="text-2xl">{% include "locations/_country_flag.html" with flag_class="" %}</span>
                                 <span class="font-medium">{{ country.name }}</span>
                             </a>
                         {% endfor %}
@@ -109,7 +109,7 @@
                         {% for city in results.cities %}
                             <a href="{{ city.url }}"
                                class="flex items-center gap-2 bg-white border border-stone-200 dark:bg-stone-800 dark:border-stone-700 rounded-lg px-4 py-3 [@media(hover:hover)]:hover:border-amber-600 dark:[@media(hover:hover)]:hover:border-amber-500 [@media(hover:hover)]:hover:shadow-sm transition">
-                                <span class="text-xl">{{ city.country.flag }}</span>
+                                <span class="text-xl">{% include "locations/_country_flag.html" with country=city.country flag_class="" %}</span>
                                 <div>
                                     <div class="font-medium">{{ city.name }}</div>
                                     <div class="text-xs text-stone-400 dark:text-stone-500">{{ city.country.name }}</div>
@@ -152,7 +152,7 @@
             {% if latest_location %}
             <div class="bg-white border border-stone-200 dark:bg-stone-800 dark:border-stone-700 rounded-xl p-2 sm:p-5 text-center flex flex-col items-center justify-center overflow-hidden">
                 <div class="text-[9px] sm:text-xs text-stone-400 dark:text-stone-500 uppercase tracking-normal sm:tracking-wide mb-1 whitespace-nowrap">Last added</div>
-                <a href="{{ latest_location.city.url }}" class="w-full text-sm font-medium text-amber-800 dark:text-amber-400 hover:underline leading-tight">{{ latest_location.city.name }} {{ latest_location.city.country.flag }}</a>
+                <a href="{{ latest_location.city.url }}" class="flex w-full flex-wrap items-center justify-center gap-x-1 text-sm font-medium leading-tight text-amber-800 hover:underline dark:text-amber-400">{{ latest_location.city.name }} {% include "locations/_country_flag.html" with country=latest_location.city.country flag_class="" %}</a>
                 <div class="text-[9px] sm:text-xs text-stone-400 dark:text-stone-500 mt-1 whitespace-nowrap">{{ latest_location.created_at|date:"M d, Y" }}</div>
             </div>
             {% endif %}
@@ -168,7 +168,7 @@
                        data-country-slug="{{ country.slug }}"
                        data-country-flag="{{ country.flag }}">
                         <span class="text-lg font-medium">{{ country.name }}</span>
-                        <span class="text-2xl ml-auto">{{ country.flag }}</span>
+                        <span class="text-2xl ml-auto">{% include "locations/_country_flag.html" with flag_class="" %}</span>
                     </a>
                 {% endfor %}
             </div>

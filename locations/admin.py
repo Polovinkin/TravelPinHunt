@@ -6,10 +6,26 @@ from django.db import models
 from django.utils.text import slugify
 from django.urls import reverse
 from django.utils.html import format_html
+from django.templatetags.static import static
 from urllib.parse import urlencode
 
 
 # --- COUNTRIES ---
+
+def country_flag_display(country):
+    if country.custom_flag:
+        return format_html(
+            '<img src="{}" alt="" aria-hidden="true" style="width: 1.1em; height: 0.75em; object-fit: contain; vertical-align: middle;">',
+            static(country.custom_flag),
+        )
+    return country.flag
+
+
+def country_flag_data(country):
+    return {
+        "emoji": country.flag,
+        "image_url": static(country.custom_flag) if country.custom_flag else "",
+    }
 
 class HasLocationsFilter(admin.SimpleListFilter):
     """Тоггл в сайдбаре: показывать только страны, у которых есть хотя бы одна locations."""
@@ -36,6 +52,7 @@ class CountryAdmin(admin.ModelAdmin):
     list_filter = [HasLocationsFilter, "has_states"]
     search_fields = ["name", "code"]
     readonly_fields = ["slug"]  # slug генерируется автоматически из name, руками не редактируется
+    fields = ["name", ("code", "custom_flag"), "has_states", "slug"]
 
     def get_queryset(self, request):
         # annotate вместо obj.cities... в цикле — иначе на 100+ странах будет N+1 запросов.
@@ -56,8 +73,7 @@ class CountryAdmin(admin.ModelAdmin):
 
     @admin.display(description="Flag")
     def flag_display(self, obj):
-        # эмодзи флага для визуала в списке стран
-        return obj.flag
+        return country_flag_display(obj)
 
     @admin.display(description="Cities", ordering="city_count_annotated")
     def city_count(self, obj):
@@ -125,7 +141,7 @@ class StateAdmin(admin.ModelAdmin):
 
     @admin.display(description="Flag")
     def flag_display(self, obj):
-        return obj.country.flag
+        return country_flag_display(obj.country)
 
     @admin.display(description="Cities", ordering="city_count_annotated")
     def city_count(self, obj):
@@ -134,7 +150,7 @@ class StateAdmin(admin.ModelAdmin):
     def _country_flags_context(self):
         # переиспользуем ту же логику и тот же JS, что и в CityAdmin — см. там подробный комментарий
         import json
-        return {"country_flags_json": json.dumps({str(c.pk): c.flag for c in Country.objects.all()})}
+        return {"country_flags_json": json.dumps({str(c.pk): country_flag_data(c) for c in Country.objects.all()})}
 
     def add_view(self, request, form_url="", extra_context=None):
         extra_context = {**(extra_context or {}), **self._country_flags_context()}
@@ -240,15 +256,14 @@ class CityAdmin(admin.ModelAdmin):
 
     @admin.display(description="Flag")
     def flag_display(self, obj):
-        # эмодзи флага страны рядом с её названием, как в списке стран
-        return obj.country.flag
+        return country_flag_display(obj.country)
 
     def _country_flags_context(self):
         # {country_id: flag_emoji} для JS, который рисует флаг рядом с полем Country.
         # Считаем на каждый рендер формы (запрос дешёвый — всего ~170 стран), а не кэшируем,
         # чтобы не расходиться с реальными данными в БД.
         import json
-        return {"country_flags_json": json.dumps({str(c.pk): c.flag for c in Country.objects.all()})}
+        return {"country_flags_json": json.dumps({str(c.pk): country_flag_data(c) for c in Country.objects.all()})}
 
     def _state_context(self):
         # {country_id: True} для стран с has_states=True, и {country_id: [{id, name}, ...]}
@@ -380,7 +395,7 @@ class LocationAdmin(admin.ModelAdmin):
         # (флаг берётся из страны, к которой привязан город)
         import json
         cities = City.objects.select_related("country")
-        return {"city_flags_json": json.dumps({str(c.pk): c.country.flag for c in cities})}
+        return {"city_flags_json": json.dumps({str(c.pk): country_flag_data(c.country) for c in cities})}
 
     def add_view(self, request, form_url="", extra_context=None):
         extra_context = {**(extra_context or {}), **self._city_flags_context()}

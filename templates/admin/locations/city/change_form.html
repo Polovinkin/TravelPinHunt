@@ -1,12 +1,12 @@
 {% extends "admin/change_form.html" %}
 {% load i18n admin_urls %}
 
-<!-- Шаблон формы City. Отличия от стандартной формы — три JSON-мэппинга:
-     - {country_id: flag_emoji} читает static/admin_country_flag.js, чтобы рисовать
-       флаг выбранной страны рядом с полем Country.
-     - {country_id: true} и {country_id: [{id, name}, ...]} читает
-       static/admin_city_state.js, чтобы показывать/скрывать и заполнять поле State
-       только для стран с has_states=True (например США). -->
+<!-- Шаблон формы City добавляет к стандартной форме админки три JSON-мэппинга:
+     - {country_id: flag_data} используется в static/admin_country_flag.js, чтобы
+       показывать эмодзи или кастомное изображение флага рядом с полем Country.
+     - {country_id: true} и {country_id: [{id, name}, ...]} используются в
+       static/admin_city_state.js, чтобы показывать, скрывать и заполнять поле State
+       только для стран с has_states=True. -->
 
 {% block field_sets %}
 <script id="country-flags-data" type="application/json">{{ country_flags_json|safe }}</script>

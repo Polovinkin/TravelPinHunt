@@ -126,6 +126,12 @@ fieldset.aligned.module .form-row:last-child {
     transform: translateY(-4px);
 }
 
+.country-flag-preview-image {
+    width: 1.1em;
+    height: 0.75em;
+    object-fit: contain;
+}
+
 /* поле City в форме Location — select2 сам выставляет себе инлайн-ширину через JS,
    поэтому обычный width в виджете тут не сработает, нужен !important. Делаем вдвое
    шире дефолтной — иначе длинные подписи "City, State, Country" обрезаются. */

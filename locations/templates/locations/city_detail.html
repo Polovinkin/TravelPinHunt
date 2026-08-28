@@ -57,7 +57,7 @@
         <div class="flex items-center gap-3">
             <!-- Код штата использует ту же квадратную цветную рамку, что и на странице страны. -->
             <!-- Не повторяем страну, если её название совпадает с названием города (например, Сингапур, Макао, Гонконг). -->
-            <h1 class="text-2xl sm:text-3xl font-bold flex items-center gap-3"><span class="text-3xl sm:text-4xl">{{ city.country.flag }}</span>{% if city.state.code %}<span class="text-xs sm:text-sm font-bold text-amber-800 bg-amber-50 border border-amber-300 dark:text-amber-300 dark:bg-amber-950/50 dark:border-amber-800 rounded px-1.5 py-0.5 tracking-wide">{{ city.state.code }}</span>{% endif %}{% if city.name == city.country.name %}Travel pins in {{ city.name }}{% else %}Travel pins in {{ city.name }}, {{ city.country.name }}{% endif %}</h1>
+            <h1 class="text-2xl sm:text-3xl font-bold flex items-center gap-3"><span class="text-3xl sm:text-4xl">{% include "locations/_country_flag.html" with country=city.country flag_class="" %}</span>{% if city.state.code %}<span class="text-xs sm:text-sm font-bold text-amber-800 bg-amber-50 border border-amber-300 dark:text-amber-300 dark:bg-amber-950/50 dark:border-amber-800 rounded px-1.5 py-0.5 tracking-wide">{{ city.state.code }}</span>{% endif %}{% if city.name == city.country.name %}Travel pins in {{ city.name }}{% else %}Travel pins in {{ city.name }}, {{ city.country.name }}{% endif %}</h1>
             {% if city.location_type %}
                 <!-- Бейдж типа — например "Island" или "Region", если это не обычный город -->
                 <span class="text-sm bg-amber-50 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300 px-3 py-1 rounded-full font-medium">
