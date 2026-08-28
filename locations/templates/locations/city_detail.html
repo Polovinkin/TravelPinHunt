@@ -142,7 +142,10 @@
             </div>
         {% empty %}
             {% if city.note %}
-                <p class="border-t border-stone-200 pt-5 text-center text-sm italic text-stone-500 dark:border-stone-700 dark:text-stone-400">We know pins are out there — but the exact spots are still to be added.</p>
+                <div class="border-t border-stone-200 pt-5 text-center text-sm italic text-stone-500 dark:border-stone-700 dark:text-stone-400">
+                    <p>We know pins are out there — but the exact spots are still to be added.</p>
+                    <p class="mt-1">Found a place selling pins in {{ city.name }}? <a href="{% url 'locations:submit_location' %}" class="text-amber-800 underline underline-offset-2 hover:text-amber-900 dark:text-amber-300 dark:hover:text-amber-200">Submit a location</a>.</p>
+                </div>
             {% else %}
                 <!-- Заглушка если для города ещё нет ни одного места -->
                 <p class="text-stone-500 dark:text-stone-400">No locations added yet.</p>
