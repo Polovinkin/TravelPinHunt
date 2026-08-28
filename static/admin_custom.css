@@ -78,31 +78,19 @@ fieldset.aligned.module .form-row:last-child {
 }
 
 /* эмодзи флага рядом с полем Country (City admin) / City (Location admin) — см. admin_country_flag.js.
-   JS кладёт флаг прямым потомком ".form-row" (а не рядом с select внутри вложенных
-   div'ов), поэтому в обеих формах (City — только Country в строке, Location — только
-   City в строке) он оказывается на одном уровне вложенности. Делаем саму строку
-   flex-контейнером — тогда флаг центрируется по вертикали (align-items: center) и
-   прижимается вправо (margin-left: auto) одинаково в обоих случаях. */
-.form-row.field-country,
-.form-row.field-city {
-    display: flex;
-    align-items: flex-start;
-}
-
+   JS вставляет его после видимого select2-виджета и перед кнопками связанных объектов,
+   поэтому флаг остаётся рядом с выбранным значением, а не у правого края строки. */
 .country-flag-preview {
     display: inline-flex;
     align-items: center;
-    margin-left: auto;
-    /* выравниваем верх флага с верхом текста в input/label, а не с вертикальным
-       центром всей строки (там ниже, чем хотелось бы) */
-    margin-top: 2px;
-    padding-left: 16px;
-    font-size: 42px;
+    align-self: center;
+    margin: 0 10px;
+    vertical-align: middle;
+    /* почти во всю высоту поля выбора страны */
+    font-size: 35px;
     line-height: 1;
-    /* фиксируем реальную высоту флекс-айтема — иначе крупный шрифт эмодзи растянет
-       саму строку формы и сдвинет остальные поля вниз */
-    height: 24px;
-    overflow: visible;
+    /* У emoji-глифов видимая часть чуть смещена вниз относительно их строки. */
+    transform: translateY(-4px);
 }
 
 /* поле City в форме Location — select2 сам выставляет себе инлайн-ширину через JS,

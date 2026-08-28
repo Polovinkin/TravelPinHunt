@@ -28,16 +28,20 @@
 
             var flags = getFlagsMap(config.dataId);
 
-            // добавляем флаг как прямого потомка ".form-row" (а не рядом с select внутри
-            // вложенных div'ов) — так у City (одно поле в строке) и Location (Name+City
-            // в одной строке) флаг оказывается на одном и том же уровне вложенности,
-            // и CSS (display:flex; align-items:center на .form-row) центрирует и
-            // прижимает его вправо одинаково в обоих случаях
-            var $row = $select.closest(".form-row");
-            var $anchor = $row.length ? $row : $select;
-
             var $flag = $('<span class="country-flag-preview"></span>');
-            $anchor.append($flag);
+            // Кнопки «изменить», «добавить» и «посмотреть» — прямые потомки обёртки
+            // related-widget-wrapper. Ставим флаг перед первой из них: так он всегда
+            // находится между выбором страны и этими кнопками, независимо от того,
+            // когда Select2 добавил свой видимый контейнер.
+            var $wrapper = $select.closest(".related-widget-wrapper");
+            var $firstLink = $wrapper.children(".related-widget-wrapper-link").first();
+            if ($firstLink.length) {
+                $flag.insertBefore($firstLink);
+            } else if ($wrapper.length) {
+                $wrapper.append($flag);
+            } else {
+                $flag.insertAfter($select);
+            }
 
             function updateFlag() {
                 var id = $select.val();
