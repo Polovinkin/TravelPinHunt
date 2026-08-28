@@ -77,6 +77,26 @@ fieldset.aligned.module .form-row:last-child {
     border-bottom: none;
 }
 
+/* Ссылка на публичную страницу города в блоке object tools формы редактирования City. */
+.object-tools a.city-public-link:link,
+.object-tools a.city-public-link:visited {
+    /* Такие же отступы, как у стандартной кнопки History. */
+    padding: 3px 12px;
+    border: 0;
+    border-radius: 8px;
+    background-color: #92400e !important;
+    background-image: none;
+    color: #fff !important;
+    font-weight: bold;
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+.object-tools a.city-public-link:focus,
+.object-tools a.city-public-link:hover {
+    background-color: #78350f !important;
+}
+
 /* эмодзи флага рядом с полем Country (City admin) / City (Location admin) — см. admin_country_flag.js.
    JS вставляет его после видимого select2-виджета и перед кнопками связанных объектов,
    поэтому флаг остаётся рядом с выбранным значением, а не у правого края строки. */
