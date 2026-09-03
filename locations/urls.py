@@ -7,6 +7,7 @@ app_name = "locations"
 urlpatterns = [
     path("", views.home, name="home"),
     path("about/", views.about, name="about"),
+    path("terms/", views.terms, name="terms"),
     path("submit/", views.submit_location, name="submit_location"),
     path("submit/success/", views.submit_success, name="submit_success"),
     path("contributors/", views.contributors, name="contributors"),

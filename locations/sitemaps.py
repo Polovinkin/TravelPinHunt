@@ -8,13 +8,13 @@ from .models import Country, State, City
 
 
 class StaticViewSitemap(Sitemap):
-    """Статические страницы сайта: главная, about, contributors."""
+    """Static pages included in the sitemap."""
 
     priority = 0.5
     changefreq = "monthly"
 
     def items(self):
-        return ["locations:home", "locations:about", "locations:contributors"]
+        return ["locations:home", "locations:about", "locations:contributors", "locations:terms"]
 
     def location(self, item):
         return reverse(item)

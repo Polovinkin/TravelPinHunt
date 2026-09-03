@@ -86,6 +86,10 @@ def about(request):
     return render(request, "locations/about.html")
 
 
+def terms(request):
+    return render(request, "locations/terms.html")
+
+
 def country_detail(request, country_slug):
     # 404 если страна не найдена
     country = get_object_or_404(Country, slug=country_slug)

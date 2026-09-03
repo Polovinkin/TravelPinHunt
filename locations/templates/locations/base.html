@@ -130,8 +130,10 @@
     <footer class="border-t border-stone-200 dark:border-stone-800 mt-5 py-6">
     <div class="max-w-4xl mx-auto px-6 flex flex-col sm:flex-row items-center sm:items-baseline justify-between gap-3 sm:gap-2 text-sm text-amber-700 dark:text-amber-400 text-center">
         <span>Made while travelling 🌍✈️👨🏼‍💻</span>
-        <span class="flex items-baseline gap-2">
+        <span class="flex flex-wrap items-baseline justify-center gap-2">
             <a href="{% url 'locations:contributors' %}" class="border border-amber-800 bg-white text-amber-700 hover:bg-amber-50 dark:border-amber-600 dark:bg-stone-900 dark:text-amber-400 dark:hover:bg-stone-800 px-3 py-0.5 rounded-full transition active:translate-y-px active:scale-[0.98] active:shadow-inner">Contributors</a>
+            <span>·</span>
+            <a href="{% url 'locations:terms' %}" class="hover:underline underline-offset-2">Terms of Use</a>
             <span>· © 2026</span>
         </span>
     </div>
