@@ -7,6 +7,11 @@ from django.utils.text import slugify
 
 class Country(models.Model):
     name = models.CharField(max_length=30, help_text="Country name in English")
+    mobile_name = models.CharField(
+        max_length=30,
+        blank=True,
+        help_text="Optional shorter country name shown on mobile homepage cards",
+    )
     code = models.CharField(
         max_length=2,
         unique=True,
