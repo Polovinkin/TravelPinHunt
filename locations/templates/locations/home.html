@@ -171,7 +171,8 @@
                        title="{{ country.name }}"{% endif %}>
                         <span class="text-lg font-medium">
                             {% if country.slug == "bosnia-and-herzegovina" %}
-                                Bosnia
+                                <span class="text-base sm:hidden">Bosnia and H</span>
+                                <span class="hidden sm:inline">Bosnia and H</span>
                             {% elif country.slug == "north-macedonia" %}
                                 <span class="text-base sm:hidden">N Macedonia</span>
                                 <span class="hidden sm:inline">N Macedonia</span>
