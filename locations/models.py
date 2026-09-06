@@ -1,7 +1,7 @@
 # Структура базы данных. Тут находятся классы которые становятся таблицами в PostgreSQL. Это сердце приложения.
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Q
+from django.db.models import Count, Q
 from django.utils.text import slugify
 
 
@@ -41,22 +41,44 @@ class Country(models.Model):
 
     def clean(self):
         super().clean()
+        if not self.slug:
+            self.slug = slugify(self.name)
+        errors = {}
+        if not self.slug:
+            errors["name"] = "The name must contain characters that can form a URL."
+        elif Country.objects.filter(slug=self.slug).exclude(pk=self.pk).exists():
+            errors["name"] = "A country with this URL already exists."
         if not self.code and not self.custom_flag:
-            raise ValidationError("Provide either an ISO country code or a custom flag image path.")
+            errors["code"] = "Provide either an ISO country code or a custom flag image path."
         if self.opens_city_directly and self.has_states:
-            raise ValidationError("A country with states cannot open a city directly.")
-        if self.opens_city_directly and self.pk and not self.cities.filter(
-            name=self.name,
-            state__isnull=True,
-        ).exists():
-            raise ValidationError(
-                "To open a city directly, create a city with the same name first."
-            )
+            errors["opens_city_directly"] = "A country with states cannot open a city directly."
+        if self.opens_city_directly:
+            if not self.pk or self.cities.filter(name=self.name, state__isnull=True).count() != 1:
+                errors["opens_city_directly"] = (
+                    "Create exactly one city with the same name and no state before enabling this option."
+                )
+        if self.pk:
+            cities = self.cities.all()
+            if cities.filter(state__isnull=False).exclude(state__country_id=self.pk).exists():
+                errors["has_states"] = "Some cities are assigned to states in another country. Fix them first."
+            elif self.has_states and cities.filter(state__isnull=True).exists():
+                errors["has_states"] = (
+                    "Assign a state/region to every city before enabling this option. "
+                    "You can prepare states and assign cities while this option is off."
+                )
+            elif not self.has_states and cities.values("slug").annotate(total=Count("pk")).filter(total__gt=1).exists():
+                errors["has_states"] = (
+                    "Cannot use city-only URLs: multiple cities have the same URL slug. "
+                    "Keep states enabled until these duplicate city URLs are resolved."
+                )
+        if errors:
+            raise ValidationError(errors)
 
     def save(self, *args, **kwargs):
         # генерируем slug из названия страны один раз при создании
         if not self.slug:
             self.slug = slugify(self.name)
+        self.full_clean()
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -83,19 +105,36 @@ class Country(models.Model):
 
 
 class State(models.Model):
-    """Штат/провинция/регион внутри страны. Универсальная модель — не только для США,
-    подойдёт для любой страны с делением на штаты/провинции. Используется только когда
-    у страны стоит Country.has_states=True."""
+    """Штат или регион можно подготовить до включения региональной навигации у страны."""
 
     country = models.ForeignKey(Country, on_delete=models.CASCADE, related_name="states")
     name = models.CharField(max_length=50, help_text="State/region name in English")
     slug = models.SlugField(blank=True, help_text="Generated automatically from the name")
     code = models.CharField(max_length=10, blank=True, help_text="Optional abbreviation, e.g. CA, NY")
 
+    def clean(self):
+        super().clean()
+        if not self.slug:
+            self.slug = slugify(self.name)
+        errors = {}
+        if not self.slug:
+            errors["name"] = "The name must contain characters that can form a URL."
+        if self.country_id:
+            if self.pk and self.cities.exclude(country_id=self.country_id).exists():
+                errors["country"] = (
+                    "Cannot move a state to another country while it contains cities. "
+                    "Create a state in the destination country and move its cities individually first."
+                )
+            if self.slug and State.objects.filter(country_id=self.country_id, slug=self.slug).exclude(pk=self.pk).exists():
+                errors["name"] = "A state with this URL already exists in the selected country."
+        if errors:
+            raise ValidationError(errors)
+
     def save(self, *args, **kwargs):
         # генерируем slug из названия штата один раз при создании
         if not self.slug:
             self.slug = slugify(self.name)
+        self.full_clean()
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -132,10 +171,55 @@ class City(models.Model):
         help_text="Optional public note shown above this city's locations",
     )
 
+    def clean(self):
+        super().clean()
+        if not self.slug:
+            self.slug = slugify(self.name)
+        errors = {}
+        if not self.slug:
+            errors["name"] = "The name must contain characters that can form a URL."
+        country = Country.objects.filter(pk=self.country_id).first() if self.country_id else None
+        state = State.objects.filter(pk=self.state_id).first() if self.state_id else None
+        if country:
+            if self.state_id and (state is None or state.country_id != country.pk):
+                errors["state"] = "Selected state does not belong to the selected country."
+            elif country.has_states and not self.state_id:
+                errors["state"] = "Select a state/region for this country."
+            elif country.opens_city_directly and self.state_id:
+                errors["state"] = "Disable 'Opens city directly' before assigning states in this country."
+
+            if country.opens_city_directly and self.name == country.name and City.objects.filter(
+                country_id=country.pk, name=country.name, state__isnull=True,
+            ).exclude(pk=self.pk).exists():
+                errors["name"] = "This country already has a city used as its landing page."
+
+            if self.slug:
+                duplicates = City.objects.filter(slug=self.slug).exclude(pk=self.pk)
+                if country.has_states and self.state_id:
+                    duplicates = duplicates.filter(state_id=self.state_id)
+                else:
+                    # Подготовленные регионы не должны создавать дубликаты публичных URL городов.
+                    duplicates = duplicates.filter(country_id=country.pk)
+                if duplicates.exists():
+                    errors["name"] = "A city with this URL already exists in the selected country or state."
+
+        if self.pk:
+            previous = City.objects.select_related("country").filter(pk=self.pk).first()
+            if previous and previous.is_country_landing_page and (
+                self.country_id != previous.country_id or self.state_id or self.name != previous.name
+            ):
+                errors["__all__"] = (
+                    "This city is the country's landing page. Disable 'Opens city directly' "
+                    "on its country before renaming it or changing its country/state."
+                )
+        if errors:
+            raise ValidationError(errors)
+
     def save(self, *args, **kwargs):
         # генерируем slug из названия города один раз при создании
         if not self.slug:
             self.slug = slugify(self.name)
+        self.full_clean()
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -162,11 +246,15 @@ class City(models.Model):
 
     @property
     def url(self):
-        if self.state_id:
+        if self.has_public_state:
             return f"/{self.country.slug}/{self.state.slug}/{self.slug}/"
         if self.is_country_landing_page:
             return self.country.url
         return f"/{self.country.slug}/{self.slug}/"
+
+    @property
+    def has_public_state(self):
+        return self.country.has_states and self.state_id is not None
 
     @property
     def is_country_landing_page(self):

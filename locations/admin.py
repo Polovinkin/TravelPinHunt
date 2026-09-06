@@ -3,7 +3,6 @@ from .models import Country, State, City, PinType, Location, LocationSubmission
 from django.contrib import admin
 from django import forms
 from django.db import models
-from django.utils.text import slugify
 from django.urls import reverse
 from django.utils.html import format_html
 from django.templatetags.static import static
@@ -45,8 +44,23 @@ class HasLocationsFilter(admin.SimpleListFilter):
         return queryset
 
 
+class CountryAdminForm(forms.ModelForm):
+    class Meta:
+        model = Country
+        fields = "__all__"
+        help_texts = {
+            "has_states": (
+                "Prepare states/regions and assign every city to one before enabling this option. "
+                "While disabled, prepared regions stay hidden on the public site. "
+                "Changing this option changes city URLs; old URLs are not redirected. "
+                "Disabling it keeps assignments but requires unique city URL slugs across the country."
+            ),
+        }
+
+
 @admin.register(Country)
 class CountryAdmin(admin.ModelAdmin):
+    form = CountryAdminForm
     list_display = ["flag_display", "name", "mobile_name", "code", "slug", "city_count", "location_count", "has_states", "opens_city_directly"]
     list_display_links = ["name"]  # кликабельным должно быть название, а не флаг
     list_filter = [HasLocationsFilter, "has_states", "opens_city_directly"]
@@ -61,13 +75,6 @@ class CountryAdmin(admin.ModelAdmin):
             city_count_annotated=models.Count("cities", distinct=True),
             location_count_annotated=models.Count("cities__locations", distinct=True),
         )
-
-        # Автокомплит для поля State.country (виджет шлёт app_label/model_name/field_name
-        # текущего поля в GET) — показываем только страны с has_states=True, чтобы туда
-        # нельзя было по ошибке добавить штат стране без этого флага. На обычный список
-        # стран в самой Country admin это не влияет — там этих GET-параметров нет.
-        if request.GET.get("model_name") == "state" and request.GET.get("field_name") == "country":
-            qs = qs.filter(has_states=True)
 
         return qs
 
@@ -88,31 +95,23 @@ class CountryAdmin(admin.ModelAdmin):
 # --- STATES ---
 
 class StateAdminForm(forms.ModelForm):
-    """Кастомная форма штата: запрещает добавить дубликат штата в ту же страну"""
+    """Оформление формы штата; общая проверка географии находится в моделях."""
 
     class Meta:
         model = State
         fields = "__all__"
+        help_texts = {
+            "country": (
+                "Regions can be prepared before enabling 'Has states'. "
+                "A region containing cities cannot be moved to another country."
+            ),
+        }
         widgets = {
             "name": forms.TextInput(attrs={"autocomplete": "off"}),
             # без этого браузер предлагает автозаполнение из ранее введённых значений
             # других полей "code" на сайте (например ISO-кодов стран) — сбивает с толку
             "code": forms.TextInput(attrs={"autocomplete": "off"}),
         }
-
-    def clean(self):
-        cleaned_data = super().clean()
-        country = cleaned_data.get("country")
-        name = cleaned_data.get("name")
-        slug = slugify(name) if name else ""
-
-        # проверяем уникальность по паре country+slug (не глобально)
-        if country and slug:
-            exists = State.objects.filter(country=country, slug=slug).exclude(pk=self.instance.pk).exists()
-            if exists:
-                self.add_error("name", f"Oops, {name} was already added to {country.name}!")
-
-        return cleaned_data
 
 
 @admin.register(State)
@@ -163,14 +162,26 @@ class StateAdmin(admin.ModelAdmin):
 # --- CITIES ---
 
 class CityAdminForm(forms.ModelForm):
-    """Кастомная форма города: требует штат для "штатных" стран (has_states=True),
-    запрещает штат для остальных, и проверяет дубликаты в правильном скоупе —
-    по штату (если есть) или по стране (если штатов нет)."""
+    """Оформление формы города; общая проверка географии находится в моделях."""
 
     class Meta:
         model = City
         fields = "__all__"
+        help_texts = {
+            "country": "Changing the country changes the public URL; the old URL is not redirected.",
+            "state": (
+                "Required when 'Has states' is enabled. You can assign a prepared region while "
+                "it is disabled; the public city URL stays unchanged until it is enabled. "
+                "Changing regions while it is enabled changes the URL without a redirect."
+            ),
+            "slug": (
+                "Generated from the name when left blank. Renaming the city keeps this value. "
+                "Change it only to fix a URL or resolve duplicate city slugs before disabling states. "
+                "Changing it changes the public URL without a redirect."
+            ),
+        }
         labels = {
+            "slug": "URL slug",
             "youtube_walk_url": "YouTube walk URL",
             "note": "City note",
         }
@@ -180,38 +191,6 @@ class CityAdminForm(forms.ModelForm):
             "note": forms.Textarea(attrs={"rows": 6, "cols": 80, "style": "width: 35rem; max-width: 100%;"}),
         }
 
-    def clean(self):
-        cleaned_data = super().clean()
-        country = cleaned_data.get("country")
-        state = cleaned_data.get("state")
-        name = cleaned_data.get("name")
-        slug = slugify(name) if name else ""
-
-        if country and country.has_states:
-            if not state:
-                self.add_error("state", f"{country.name} requires a state — please select one.")
-            elif state.country_id != country.id:
-                self.add_error("state", "Selected state does not belong to the selected country.")
-        elif state:
-            # страна без штатов, но штат почему-то передан (например через devtools) — игнорируем
-            cleaned_data["state"] = None
-            state = None
-
-        # проверяем уникальность slug в правильном скоупе: по штату, если он есть, иначе по стране
-        if slug:
-            if state:
-                exists = City.objects.filter(state=state, slug=slug).exclude(pk=self.instance.pk).exists()
-                scope_name = state.name
-            elif country:
-                exists = City.objects.filter(country=country, slug=slug, state__isnull=True).exclude(pk=self.instance.pk).exists()
-                scope_name = country.name
-            else:
-                exists = False
-                scope_name = ""
-            if exists:
-                self.add_error("name", f"Oops, {name} was already added to {scope_name}!")
-
-        return cleaned_data
 
 @admin.register(City)
 class CityAdmin(admin.ModelAdmin):
@@ -219,12 +198,11 @@ class CityAdmin(admin.ModelAdmin):
     ordering = ["-id"]
     list_display = ["name", "flag_display", "country", "state", "slug", "is_capital", "location_count"]
     search_fields = ["name", "country__name"]
-    list_filter = ["country"]
-    readonly_fields = ["slug"]  # slug генерируется автоматически из name
+    list_filter = ["country", ("state", admin.EmptyFieldListFilter)]
     autocomplete_fields = ["country"]  # поиск страны по названию вместо огромного дропдауна
     fields = [
         "country",
-        "state",  # поле видно только для стран с has_states=True — см. admin_city_state.js
+        "state",  # видно для активных и подготовленных регионов — см. admin_city_state.js
         ("name", "is_capital"),  # кортеж = два поля в одной строке
         "youtube_walk_url",
         "note",
@@ -240,6 +218,15 @@ class CityAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         # select_related избегает N+1: достаём города сразу со страной и штатом одним JOIN запросом
         return super().get_queryset(request).select_related("country", "state")
+
+    def get_search_results(self, request, queryset, search_term):
+        # Ищем многословное название города целиком, а не каждое слово отдельно.
+        search_term = search_term.strip()
+        if not search_term:
+            return queryset, False
+        return queryset.filter(
+            models.Q(name__icontains=search_term) | models.Q(country__name__icontains=search_term)
+        ), False
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "state":

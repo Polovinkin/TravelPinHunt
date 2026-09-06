@@ -40,7 +40,7 @@ class StateSitemap(Sitemap):
     priority = 0.6
 
     def items(self):
-        return State.objects.select_related("country").all()
+        return State.objects.select_related("country").filter(country__has_states=True)
 
     def location(self, obj):
         return obj.url
@@ -51,7 +51,9 @@ class CitySitemap(Sitemap):
     priority = 0.6
 
     def items(self):
-        return City.objects.select_related("country", "state").exclude(
+        return City.objects.select_related("country", "state").filter(
+            Q(country__has_states=False) | Q(state__country_id=F("country_id")),
+        ).exclude(
             country__opens_city_directly=True,
             state__isnull=True,
             name=F("country__name"),

@@ -1,6 +1,5 @@
-// Показывает поле State в форме City только для стран с has_states=True (например США) —
-// для всех остальных стран строка State полностью скрыта, форма выглядит как раньше.
-// Также подставляет в <select id="id_state"> только штаты выбранной страны.
+// Показывает поле State для стран с активными или подготовленными регионами.
+// В списке доступны только регионы выбранной страны.
 //
 // Данные читаются из двух JSON-мэппингов, которые рендерит
 // templates/admin/locations/city/change_form.html:
@@ -56,13 +55,14 @@
         function sync() {
             var countryId = $country.val();
             var hasStates = !!hasStatesMap[countryId];
+            var hasPreparedStates = (statesByCountry[countryId] || []).length > 0;
             // читаем ТЕКУЩЕЕ значение поля State перед каждой перестройкой (а не только
             // один раз при загрузке) — так выбор переживает повторные вызовы sync(),
             // в том числе если select2 при инициализации сам триггерит лишний change
             // на поле Country без реальной смены страны
             var currentStateId = stateSelect.value;
 
-            if (!hasStates) {
+            if (!hasStates && !hasPreparedStates) {
                 stateSelect.value = "";
                 $stateRow.hide();
                 return;

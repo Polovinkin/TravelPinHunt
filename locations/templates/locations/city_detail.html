@@ -39,7 +39,7 @@
             "position": 2,
             "name": "{{ city.country.name|escapejs }}",
             "item": "https://travelpinhunt.com{{ city.country.url }}"
-        }{% if city.state %},
+        }{% if city.has_public_state %},
         {
             "@type": "ListItem",
             "position": 3,
@@ -70,7 +70,7 @@
         <div class="flex items-center gap-3">
             <!-- Код штата использует ту же квадратную цветную рамку, что и на странице страны. -->
             <!-- Не повторяем страну, если её название совпадает с названием города (например, Сингапур, Макао, Гонконг). -->
-            <h1 class="text-2xl sm:text-3xl font-bold flex items-center gap-3"><span class="text-3xl sm:text-4xl">{% include "locations/_country_flag.html" with country=city.country flag_class="" %}</span>{% if city.state.code %}<span class="text-xs sm:text-sm font-bold text-amber-800 bg-amber-50 border border-amber-300 dark:text-amber-300 dark:bg-amber-950/50 dark:border-amber-800 rounded px-1.5 py-0.5 tracking-wide">{{ city.state.code }}</span>{% endif %}{% if city.name == city.country.name %}Travel pins in {{ city.name }}{% else %}Travel pins in {{ city.name }}, {{ city.country.name }}{% endif %}</h1>
+            <h1 class="text-2xl sm:text-3xl font-bold flex items-center gap-3"><span class="text-3xl sm:text-4xl">{% include "locations/_country_flag.html" with country=city.country flag_class="" %}</span>{% if city.has_public_state and city.state.code %}<span class="text-xs sm:text-sm font-bold text-amber-800 bg-amber-50 border border-amber-300 dark:text-amber-300 dark:bg-amber-950/50 dark:border-amber-800 rounded px-1.5 py-0.5 tracking-wide">{{ city.state.code }}</span>{% endif %}{% if city.name == city.country.name %}Travel pins in {{ city.name }}{% else %}Travel pins in {{ city.name }}, {{ city.country.name }}{% endif %}</h1>
             {% if city.location_type %}
                 <!-- Бейдж типа — например "Island" или "Region", если это не обычный город -->
                 <span class="text-sm bg-amber-50 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300 px-3 py-1 rounded-full font-medium">
@@ -83,7 +83,7 @@
             {% if not city.is_country_landing_page %}
                 <a href="{{ city.country.url }}" class="inline-flex items-center gap-1 rounded-md border border-stone-300 bg-white px-2.5 py-1 font-medium text-stone-700 shadow-sm transition duration-150 hover:bg-amber-50 hover:text-amber-900 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 active:translate-y-px active:shadow-inner dark:border-stone-600 dark:bg-stone-800 dark:text-stone-200 dark:hover:bg-stone-700 dark:hover:text-amber-300 dark:focus-visible:ring-offset-stone-900"><span>← {{ city.country.name }}</span></a>
             {% endif %}
-            {% if city.state %}
+            {% if city.has_public_state %}
                 <a href="{{ city.state.url }}" class="inline-flex items-center gap-1 rounded-md border border-stone-300 bg-stone-100 px-2.5 py-1 font-medium text-stone-600 shadow-sm transition duration-150 hover:bg-stone-200 hover:text-stone-800 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-400 focus-visible:ring-offset-2 active:translate-y-px active:shadow-inner dark:border-stone-700 dark:bg-stone-900 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-200 dark:focus-visible:ring-stone-500 dark:focus-visible:ring-offset-stone-900"><span>← {{ city.state.name }}</span></a>
             {% endif %}
             <p class="text-stone-500 dark:text-stone-400">{% if locations %}{{ locations|length }} pin selling location{{ locations|length|pluralize }}{% else %}No pin selling locations found, for now{% endif %}</p>

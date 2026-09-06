@@ -1,5 +1,6 @@
 # Логика страниц. Каждая функция получает запрос, достаёт данные из БД и возвращает HTML. Мозг приложения.
 from django.shortcuts import render, get_object_or_404, redirect
+from django.http import Http404
 from .models import Country, State, City, Location, LocationSubmission
 from .forms import LocationSubmissionForm
 from django.db.models import Count, Q
@@ -158,9 +159,9 @@ def country_child_detail(request, country_slug, second_slug):
 
 
 def state_detail(request, country, state_slug):
-    state = get_object_or_404(State, slug=state_slug, country=country)
+    state = get_object_or_404(State, slug=state_slug, country=country, country__has_states=True)
     cities = list(
-        City.objects.filter(state=state)
+        City.objects.filter(state=state, country=country)
         .filter(Q(locations__isnull=False) | Q(note__gt=""))
         .distinct()
         .select_related("country", "state")
@@ -185,9 +186,14 @@ def state_detail(request, country, state_slug):
 def city_detail(request, country, city_slug, state=None):
     # slug города уникален в рамках штата (если есть) или страны (если штатов нет)
     lookup = {"slug": city_slug, "country": country}
-    if state is not None:
+    if country.has_states:
         lookup["state"] = state
-    city = get_object_or_404(City.objects.select_related("country", "state"), **lookup)
+    cities = City.objects.select_related("country", "state").filter(**lookup)
+    # При старых дубликатах URL города возвращаем 404 вместо серверной ошибки.
+    try:
+        city = get_object_or_404(cities)
+    except City.MultipleObjectsReturned:
+        raise Http404("Ambiguous city URL") from None
     if city.is_country_landing_page and request.path != city.url:
         return redirect(city.url, permanent=True)
     # сначала локации с бóльшим числом разных типов пинов (3 -> 2 -> 1), внутри группы — по имени
@@ -203,7 +209,7 @@ def city_detail(request, country, city_slug, state=None):
 
 def city_detail_in_state(request, country_slug, state_slug, city_slug):
     # Полный трёхсегментный URL /country/state/city/ — только для "штатных" стран
-    country = get_object_or_404(Country, slug=country_slug)
+    country = get_object_or_404(Country, slug=country_slug, has_states=True)
     state = get_object_or_404(State, slug=state_slug, country=country)
     return city_detail(request, country, city_slug, state=state)
 
