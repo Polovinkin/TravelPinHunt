@@ -48,6 +48,12 @@ def home(request):
             "country", "state"
         ).distinct()
 
+        # Точное уникальное совпадение сразу открывает страницу города.
+        # Частичные совпадения и одинаковые названия в разных местах остаются в выдаче.
+        exact_cities = list(cities.filter(name__iexact=query)[:2])
+        if len(exact_cities) == 1:
+            return redirect(exact_cities[0].url)
+
         countries_found = Country.objects.filter(
             country_filter,
         ).filter(
