@@ -21,25 +21,12 @@ COUNTRY_ALIASES = {
 
 
 def home(request):
-    # Показываем страны, где есть хотя бы одна локация или заметка о городе.
-    # Evaluating countries QuerySet into a list here avoids a redundant SQL COUNT(*) query
-    # when computing country_count, saving one DB query per home page render.
-    countries = list(
-        Country.objects.filter(Q(cities__locations__isnull=False) | Q(cities__note__gt=""))
-        .distinct()
-        .order_by("name")
-    )
-
     query = request.GET.get("q", "").strip()
     results = []
-
-    # последняя добавленная локация для плитки "Last added" на главной
-    latest_location = Location.objects.select_related(
-        "city", "city__country", "city__state"
-    ).order_by("-created_at").first()
-
-    location_count = Location.objects.count()
-    country_count = len(countries)
+    countries = []
+    latest_location = None
+    location_count = None
+    country_count = None
 
     if query:
         # ищем по вхождению строки в название города или страны (case-insensitive)
@@ -72,6 +59,20 @@ def home(request):
             "countries": countries_found,
             "query": query,
         }
+    else:
+        # Эти данные отображаются только на главной странице без результатов поиска.
+        countries = list(
+            Country.objects.filter(Q(cities__locations__isnull=False) | Q(cities__note__gt=""))
+            .distinct()
+            .order_by("name")
+        )
+        # Список уже загружен, поэтому len() не выполняет дополнительный COUNT-запрос.
+        country_count = len(countries)
+        location_count = Location.objects.count()
+        # Последняя добавленная локация для плитки "Last added" на главной.
+        latest_location = Location.objects.select_related(
+            "city", "city__country", "city__state"
+        ).order_by("-created_at").first()
 
     return render(request, "locations/home.html", {
         "countries": countries,
@@ -105,8 +106,6 @@ def country_detail(request, country_slug):
         return city_detail(request, country, city.slug)
 
     if country.has_states:
-        # Общее число локаций в стране — используется в meta description для более конкретного сниппета
-        total_locations = Location.objects.filter(city__country=country).count()
         # "Штатные" страны (например США): показываем штаты, в которых есть
         # хотя бы один город с локацией или заметкой — как на главной для стран.
         states = list(State.objects.filter(
@@ -116,6 +115,8 @@ def country_detail(request, country_slug):
         ).annotate(
             location_count=Count("cities__locations", distinct=True),
         ).distinct().order_by("name"))
+        # Количество уже посчитано для каждого штата в основном запросе.
+        total_locations = sum(state.location_count for state in states)
         states_with_locations_count = sum(state.location_count > 0 for state in states)
         states_with_note_count = len(states) - states_with_locations_count
         return render(request, "locations/country_detail.html", {
