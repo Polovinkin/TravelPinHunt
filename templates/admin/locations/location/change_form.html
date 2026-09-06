@@ -4,6 +4,6 @@
      admin_country_flag.js использует их, чтобы показывать флаг выбранного города рядом с полем City. -->
 
 {% block field_sets %}
-<script id="city-flags-data" type="application/json">{{ city_flags_json|safe }}</script>
+{{ city_flags_data|json_script:"city-flags-data" }}
 {{ block.super }}
 {% endblock field_sets %}

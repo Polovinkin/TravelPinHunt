@@ -149,8 +149,7 @@ class StateAdmin(admin.ModelAdmin):
 
     def _country_flags_context(self):
         # переиспользуем ту же логику и тот же JS, что и в CityAdmin — см. там подробный комментарий
-        import json
-        return {"country_flags_json": json.dumps({str(c.pk): country_flag_data(c) for c in Country.objects.all()})}
+        return {"country_flags_data": {str(c.pk): country_flag_data(c) for c in Country.objects.all()}}
 
     def add_view(self, request, form_url="", extra_context=None):
         extra_context = {**(extra_context or {}), **self._country_flags_context()}
@@ -262,20 +261,18 @@ class CityAdmin(admin.ModelAdmin):
         # {country_id: flag_emoji} для JS, который рисует флаг рядом с полем Country.
         # Считаем на каждый рендер формы (запрос дешёвый — всего ~170 стран), а не кэшируем,
         # чтобы не расходиться с реальными данными в БД.
-        import json
-        return {"country_flags_json": json.dumps({str(c.pk): country_flag_data(c) for c in Country.objects.all()})}
+        return {"country_flags_data": {str(c.pk): country_flag_data(c) for c in Country.objects.all()}}
 
     def _state_context(self):
         # {country_id: True} для стран с has_states=True, и {country_id: [{id, name}, ...]}
         # штатов этой страны — для JS, который показывает/скрывает и заполняет поле State.
-        import json
         has_states_map = {str(pk): True for pk in Country.objects.filter(has_states=True).values_list("pk", flat=True)}
         states_by_country = {}
         for state in State.objects.select_related("country").order_by("name"):
             states_by_country.setdefault(str(state.country_id), []).append({"id": state.pk, "name": state.name})
         return {
-            "country_has_states_json": json.dumps(has_states_map),
-            "states_by_country_json": json.dumps(states_by_country),
+            "country_has_states_data": has_states_map,
+            "states_by_country_data": states_by_country,
         }
 
     def add_view(self, request, form_url="", extra_context=None):
@@ -396,9 +393,8 @@ class LocationAdmin(admin.ModelAdmin):
     def _city_flags_context(self):
         # {city_id: flag_emoji} для JS, который рисует флаг рядом с полем City
         # (флаг берётся из страны, к которой привязан город)
-        import json
         cities = City.objects.select_related("country")
-        return {"city_flags_json": json.dumps({str(c.pk): country_flag_data(c.country) for c in cities})}
+        return {"city_flags_data": {str(c.pk): country_flag_data(c.country) for c in cities}}
 
     def add_view(self, request, form_url="", extra_context=None):
         extra_context = {**(extra_context or {}), **self._city_flags_context()}

@@ -9,9 +9,9 @@
        только для стран с has_states=True. -->
 
 {% block field_sets %}
-<script id="country-flags-data" type="application/json">{{ country_flags_json|safe }}</script>
-<script id="country-has-states-data" type="application/json">{{ country_has_states_json|safe }}</script>
-<script id="states-by-country-data" type="application/json">{{ states_by_country_json|safe }}</script>
+{{ country_flags_data|json_script:"country-flags-data" }}
+{{ country_has_states_data|json_script:"country-has-states-data" }}
+{{ states_by_country_data|json_script:"states-by-country-data" }}
 {{ block.super }}
 {% endblock field_sets %}
 
