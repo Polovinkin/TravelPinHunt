@@ -196,10 +196,11 @@ def city_detail(request, country, city_slug, state=None):
         raise Http404("Ambiguous city URL") from None
     if city.is_country_landing_page and request.path != city.url:
         return redirect(city.url, permanent=True)
-    # сначала локации с бóльшим числом разных типов пинов (3 -> 2 -> 1), внутри группы — по имени
+    # Show Pincredible locations first, then sort by the number of distinct pin types
+    # (3 -> 2 -> 1), and finally by name within each group.
     locations = Location.objects.filter(city=city).prefetch_related("pin_types").annotate(
         pin_type_count=Count("pin_types", distinct=True)
-    ).order_by("-pin_type_count", "name")
+    ).order_by("-is_pincredible", "-pin_type_count", "name")
     return render(request, "locations/city_detail.html", {
         "city": city,
         "locations": locations,

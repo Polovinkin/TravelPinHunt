@@ -109,7 +109,7 @@
     <!-- Список мест где продают пины в этом городе -->
     <div class="flex flex-col gap-4">
         {% for location in locations %}
-            <div class="bg-white border border-stone-200 dark:bg-stone-800 dark:border-stone-700 rounded-xl p-5 overflow-hidden">
+            <div class="bg-white border {% if location.is_pincredible %}border-amber-400 dark:border-amber-500/70{% else %}border-stone-200 dark:border-stone-700{% endif %} dark:bg-stone-800 rounded-xl p-5 overflow-hidden">
                 <!-- Кнопка карт плавает вправо, текст её обтекает -->
                 <!-- В России и Южной Осетии при наличии ссылки показываем Яндекс.Карты вместо Google Maps -->
                 {% if city.country.uses_yandex_maps %}
@@ -152,6 +152,9 @@
                         <!-- Отдельная плашка вклада сообщества: квадратная рамка (без rounded), в отличие от круглых тегов типов пинов выше -->
                         <span class="text-stone-300 dark:text-stone-600">·</span>
                         <span class="bg-amber-50 border border-amber-200 text-amber-800 dark:bg-amber-900/20 dark:border-amber-700/50 dark:text-amber-200 text-xs font-medium px-2 py-1">{% if location.contributor_nickname %}👤 by {{ location.contributor_nickname }}{% else %}👥 Community-added{% endif %}</span>
+                    {% endif %}
+                    {% if location.is_pincredible %}
+                        <span title="The location with an exceptional pin selection. This is the place to go to." class="ml-auto inline-flex cursor-help items-center gap-1 border border-amber-400 bg-amber-100 px-2.5 py-1 text-xs font-semibold italic tracking-wide text-amber-900 shadow-sm dark:border-amber-500/70 dark:bg-amber-900/50 dark:text-amber-200"><span aria-hidden="true">✦</span> Pincredible</span>
                     {% endif %}
                 </div>
             </div>

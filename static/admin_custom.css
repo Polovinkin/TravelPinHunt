@@ -140,6 +140,11 @@ fieldset.aligned.module .form-row:last-child {
     max-width: 100%;
 }
 
+/* Vertically center Pincredible beside the Location name field. */
+.form-row.field-name.field-is_pincredible > .form-multiline {
+    align-items: center;
+}
+
 /* бейдж с числом Pending-заявок рядом с "Location submissions" на главной странице
    админки — см. get_app_list в admin.py. */
 .pending-badge {

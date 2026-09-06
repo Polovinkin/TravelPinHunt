@@ -307,7 +307,7 @@ class LocationAdminForm(forms.ModelForm):
         }
         widgets = {
             # ширина в 2 раза больше стандартной (vTextField ~20em) — имена локаций часто длинные
-            "name": forms.TextInput(attrs={"autocomplete": "off", "style": "width: 50%; max-width: 40em;"}),
+            "name": forms.TextInput(attrs={"autocomplete": "off", "style": "width: 40em; max-width: 100%;"}),
             # class="vLargeTextField" — стандартный класс Django admin для текстовых полей,
             # без него виджет теряет обычную ширину (48em)
             "description": forms.Textarea(attrs={"rows": 7, "class": "vLargeTextField"}),
@@ -341,13 +341,13 @@ class LocationAdminForm(forms.ModelForm):
 @admin.register(Location)
 class LocationAdmin(admin.ModelAdmin):
     form = LocationAdminForm
-    list_display = ["name", "city", "source_column", "created_at"]
+    list_display = ["name", "city", "is_pincredible", "source_column", "created_at"]
     search_fields = ["name", "description", "city__name"]  # city__name — чтобы искать локации по названию города
-    list_filter = ["pin_types", "source"]
+    list_filter = ["is_pincredible", "pin_types", "source"]
     readonly_fields = ["lat", "lng", "created_at", "updated_at"]  # координаты редактируются только через поле coordinates
     autocomplete_fields = ["city"]
     fieldsets = [
-        (None, {"fields": ["name", "city", "description"]}),
+        (None, {"fields": [("name", "is_pincredible"), "city", "description"]}),
         ("Location", {"fields": ["google_maps_url", ("coordinates", "lat", "lng")]}),
         ("Pin types", {"fields": ["pin_types"]}),
         ("Contributor", {"fields": [("source", "contributor_nickname")]}),
