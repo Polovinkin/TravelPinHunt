@@ -285,7 +285,11 @@ class LocationAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # при редактировании существующей локации показываем текущие координаты в поле
-        if self.instance and self.instance.lat and self.instance.lng:
+        if (
+            self.instance
+            and self.instance.lat is not None
+            and self.instance.lng is not None
+        ):
             self.fields["coordinates"].initial = f"{self.instance.lat}, {self.instance.lng}"
 
     class Meta:
