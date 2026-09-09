@@ -6,6 +6,11 @@ Source code for [TravelPinHunt.com](https://travelpinhunt.com)
 
 ### License
 
-This is proprietary software. Source availability does not grant
-permission to use, copy, modify, distribute, or sell the software.
-See LICENSE.
+The source code in this repository is proprietary. Source availability does
+not grant permission to use, copy, modify, distribute, or sell the software.
+
+This restriction applies to the software, not to ordinary browsing of the
+hosted TravelPinHunt website. Access to and use of the website, its content,
+and its database are governed by the [TravelPinHunt Terms of Use](https://travelpinhunt.com/terms/).
+
+See [LICENSE](LICENSE).
