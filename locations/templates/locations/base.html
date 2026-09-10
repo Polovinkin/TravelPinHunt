@@ -63,6 +63,15 @@
     </script>
     {% block structured_data %}{% endblock %}
 <style>
+    /* Центр страницы считается от всей ширины окна и не смещается при появлении scrollbar. */
+    html {
+        overflow-x: clip;
+    }
+
+    body {
+        width: 100vw;
+    }
+
     .logo-text {
         transition: color 0.25s;
         text-shadow: 0 0 20px rgba(0,0,0,0.1);
