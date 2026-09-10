@@ -1,4 +1,12 @@
 /* После изменения Tailwind-классов пересобери static/tailwind.css командой npm --prefix tools/tailwind run build:css. */
+@font-face {
+    font-family: "Nunito Sans";
+    src: url("./fonts/NunitoSans-Variable.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 200 1000;
+    font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
