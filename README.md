@@ -3,6 +3,21 @@ Source code for [TravelPinHunt.com](https://travelpinhunt.com)
 
 <img width="2000" height="400" alt="image" src="https://github.com/user-attachments/assets/fe0b28e7-6929-4658-87ee-4691e1dba8e0" />
 
+### Разработка: сборка Tailwind CSS
+
+После изменения Tailwind-классов нужно пересобирать и коммитить обновленный `static/tailwind.css` следующей командой:
+
+```bash
+npm --prefix tools/tailwind run build:css
+```
+
+После нового клонирования надо сначала выполнять:
+
+```bash
+npm install --prefix tools/tailwind
+```
+
+Подробнее: [`tools/tailwind/README.md`](tools/tailwind/README.md).
 
 ### License
 

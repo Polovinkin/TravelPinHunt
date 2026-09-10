@@ -1,0 +1,4 @@
+/* После изменения Tailwind-классов пересобери static/tailwind.css командой npm --prefix tools/tailwind run build:css. */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

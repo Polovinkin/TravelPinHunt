@@ -220,6 +220,9 @@ __marimo__/
 # Mac stuff
 .DS_Store
 
+# Зависимости Node (Tailwind собирается в static/tailwind.css)
+node_modules/
+
 # Django stuff
 staticfiles/
 
