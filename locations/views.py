@@ -26,6 +26,7 @@ def home(request):
     countries = []
     latest_location = None
     location_count = None
+    city_count = None
     country_count = None
 
     if query:
@@ -75,6 +76,7 @@ def home(request):
         # Список уже загружен, поэтому len() не выполняет дополнительный COUNT-запрос.
         country_count = len(countries)
         location_count = Location.objects.count()
+        city_count = City.objects.filter(locations__isnull=False).distinct().count()
         # Последняя добавленная локация для плитки "Last added" на главной.
         latest_location = Location.objects.select_related(
             "city", "city__country", "city__state"
@@ -86,6 +88,7 @@ def home(request):
         "query": query,
         "latest_location": latest_location,
         "location_count": location_count,
+        "city_count": city_count,
         "country_count": country_count,
     })
 
