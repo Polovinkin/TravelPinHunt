@@ -213,7 +213,7 @@ class CityAdmin(admin.ModelAdmin):
     class Media:
         # первый скрипт рисует флаг рядом с Country, второй — показывает/скрывает и
         # заполняет поле State в зависимости от выбранной страны
-        js = ["admin_country_flag.js", "admin_city_state.js"]
+        js = ["admin_country_flag.js", "admin_city_state.js", "admin_unsaved_changes.js"]
 
     def get_queryset(self, request):
         # select_related избегает N+1: достаём города сразу со страной и штатом одним JOIN запросом
@@ -412,7 +412,7 @@ class LocationAdmin(admin.ModelAdmin):
 
     class Media:
         css = {"all": ["admin_custom.css"]}  # чекбоксы pin_types в одну строку
-        js = ["admin_country_flag.js"]  # флаг страны рядом с полем City
+        js = ["admin_country_flag.js", "admin_unsaved_changes.js"]
 
 
 # --- PIN TYPES ---
@@ -525,6 +525,7 @@ class LocationSubmissionAdmin(admin.ModelAdmin):
 
     class Media:
         css = {"all": ["admin_custom.css"]}  # жирный лейбл "Pin types:"
+        js = ["admin_unsaved_changes.js"]
 
 
 # на главной странице админки подписываем "Location submissions" количеством заявок в
