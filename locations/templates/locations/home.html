@@ -141,16 +141,16 @@
         <!-- На мобилке колонки не равны: первые три уже, четвёртая (last added) вдвое шире под длинные названия городов. На десктопе (sm:) все четыре поровну -->
         <div class="grid grid-cols-[1fr_1fr_1fr_2fr] sm:grid-cols-4 gap-2 sm:gap-4 mb-4 sm:mb-8">
             <div class="bg-white border border-stone-200 dark:bg-stone-800 dark:border-stone-700 rounded-xl px-3 py-2 sm:px-5 sm:py-3 text-center flex flex-col items-center justify-center">
-                <div class="text-2xl sm:text-3xl font-bold text-amber-800 dark:text-amber-400">{{ location_count }}</div>
-                <div class="text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-0.5">Locations</div>
+                <div class="text-2xl sm:text-3xl font-bold text-amber-800 dark:text-amber-400" style="transform: translateY(2px);">{{ location_count }}</div>
+                <div class="text-xs sm:text-sm text-stone-500 dark:text-stone-400">Locations</div>
             </div>
             <div class="bg-white border border-stone-200 dark:bg-stone-800 dark:border-stone-700 rounded-xl px-3 py-2 sm:px-5 sm:py-3 text-center flex flex-col items-center justify-center">
-                <div class="text-2xl sm:text-3xl font-bold text-amber-800 dark:text-amber-400">{{ city_count }}</div>
-                <div class="text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-0.5">Cities</div>
+                <div class="text-2xl sm:text-3xl font-bold text-amber-800 dark:text-amber-400" style="transform: translateY(2px);">{{ city_count }}</div>
+                <div class="text-xs sm:text-sm text-stone-500 dark:text-stone-400">Cities</div>
             </div>
             <div class="bg-white border border-stone-200 dark:bg-stone-800 dark:border-stone-700 rounded-xl px-3 py-2 sm:px-5 sm:py-3 text-center flex flex-col items-center justify-center">
-                <div class="text-2xl sm:text-3xl font-bold text-amber-800 dark:text-amber-400">{{ country_count }}</div>
-                <div class="text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-0.5">Countries</div>
+                <div class="text-2xl sm:text-3xl font-bold text-amber-800 dark:text-amber-400" style="transform: translateY(2px);">{{ country_count }}</div>
+                <div class="text-xs sm:text-sm text-stone-500 dark:text-stone-400">Countries</div>
             </div>
             <!-- Плитка с последней добавленной локацией (если есть). Шире остальных на мобилке, поэтому название города помещается целиком (перенос на 2 строки при необходимости, без обрезания) -->
             {% if latest_location %}
