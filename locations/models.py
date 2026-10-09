@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Count, Q
 from django.utils.text import slugify
+from .flags import flag_filename, flag_image_url, safe_flag_image_url
 
 
 class Country(models.Model):
@@ -50,6 +51,18 @@ class Country(models.Model):
             errors["name"] = "A country with this URL already exists."
         if not self.code and not self.custom_flag:
             errors["code"] = "Provide either an ISO country code or a custom flag image path."
+        if self.custom_flag:
+            try:
+                self.custom_flag = flag_filename(self.custom_flag)
+            except ValueError as error:
+                errors["custom_flag"] = str(error)
+            else:
+                try:
+                    flag_image_url(self.custom_flag)
+                except (ValueError, OSError):
+                    errors["custom_flag"] = (
+                        "Flag image not found. Deploy the file and run collectstatic first."
+                    )
         if self.opens_city_directly and self.has_states:
             errors["opens_city_directly"] = "A country with states cannot open a city directly."
         if self.opens_city_directly:
@@ -87,6 +100,10 @@ class Country(models.Model):
     class Meta:
         ordering = ["name"]
         verbose_name_plural = "Countries"
+
+    @property
+    def custom_flag_url(self):
+        return safe_flag_image_url(self.custom_flag)
 
     @property
     def flag(self):

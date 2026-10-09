@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import Http404
 from .models import Country, State, City, Location, LocationSubmission
 from .forms import LocationSubmissionForm
+from .flags import safe_flag_image_url
 from django.db.models import Count, Q
 from django.views.decorators.cache import never_cache
 import requests
@@ -283,7 +284,7 @@ def contributors(request):
     country_flags = {
         c["name"].lower(): {
             "emoji": "".join(chr(0x1F1E6 + ord(char) - ord("A")) for char in (c["code"] or "").upper()),
-            "custom_flag": c["custom_flag"],
+            "image_url": safe_flag_image_url(c["custom_flag"]),
         }
         for c in Country.objects.values("name", "code", "custom_flag")
     }
@@ -300,7 +301,7 @@ def contributors(request):
         entry = contributors_by_nickname.setdefault(nickname, {"submission_count": 0, "flags": []})
         entry["submission_count"] += 1
         flag = resolve_flag(row["country_name"])
-        if flag and (flag["emoji"] or flag["custom_flag"]) and flag not in entry["flags"]:
+        if flag and (flag["emoji"] or flag["image_url"]) and flag not in entry["flags"]:
             entry["flags"].append(flag)
 
     contributors_list = [

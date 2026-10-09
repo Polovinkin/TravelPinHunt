@@ -5,17 +5,17 @@ from django import forms
 from django.db import models
 from django.urls import reverse
 from django.utils.html import format_html
-from django.templatetags.static import static
 from urllib.parse import urlencode
 
 
 # --- COUNTRIES ---
 
 def country_flag_display(country):
-    if country.custom_flag:
+    image_url = country.custom_flag_url
+    if image_url:
         return format_html(
             '<img src="{}" alt="" aria-hidden="true" style="width: 1.1em; height: 0.75em; object-fit: contain; vertical-align: middle;">',
-            static(country.custom_flag),
+            image_url,
         )
     return country.flag
 
@@ -23,7 +23,7 @@ def country_flag_display(country):
 def country_flag_data(country):
     return {
         "emoji": country.flag,
-        "image_url": static(country.custom_flag) if country.custom_flag else "",
+        "image_url": country.custom_flag_url,
     }
 
 class HasLocationsFilter(admin.SimpleListFilter):
@@ -45,10 +45,17 @@ class HasLocationsFilter(admin.SimpleListFilter):
 
 
 class CountryAdminForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Старые значения показываем в новом формате без изменения БД при открытии формы.
+        if self.initial.get("custom_flag"):
+            self.initial["custom_flag"] = self.initial["custom_flag"].removeprefix("flags/")
+
     class Meta:
         model = Country
         fields = "__all__"
         help_texts = {
+            "custom_flag": "Optional flag filename inside static/flags/, e.g. kosovo.png. Deploy the file before saving.",
             "has_states": (
                 "Prepare states/regions and assign every city to one before enabling this option. "
                 "While disabled, prepared regions stay hidden on the public site. "
