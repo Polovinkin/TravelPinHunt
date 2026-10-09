@@ -55,7 +55,7 @@ class CountryAdminForm(forms.ModelForm):
         model = Country
         fields = "__all__"
         help_texts = {
-            "custom_flag": "Optional flag filename inside static/flags/, e.g. kosovo.png. Deploy the file before saving.",
+            "custom_flag": "Optional flag filename inside static/flags/, e.g. south_ossetia.png. Deploy the file before saving.",
             "has_states": (
                 "Prepare states/regions and assign every city to one before enabling this option. "
                 "While disabled, prepared regions stay hidden on the public site. "
