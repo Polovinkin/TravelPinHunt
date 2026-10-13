@@ -67,6 +67,7 @@ const extraFlags = [
     { name: "albania",              t: "#E41E20", p: "#000000", h: "#E41E20" },
     { name: "andorra",              t: "#003DA5", p: "#FEDF00", h: "#C7092C" },
     { name: "croatia",              t: "#D4212B", p: "#FFFFFF", h: "#1D1DA8" },
+    { name: "kosovo",               t: "#244AA5", p: "#D0A650", h: "#FFFFFF" },
     { name: "monaco",               t: "#CE1126", p: "#FFFFFF", h: "#CE1126" },
     { name: "slovenia",             t: "#003DA5", p: "#FFFFFF", h: "#CE1126" },
     { name: "austria",              t: "#ED2939", p: "#FFFFFF", h: "#ED2939" },
