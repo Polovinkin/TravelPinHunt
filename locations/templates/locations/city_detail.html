@@ -133,8 +133,8 @@
 
                 <h2 class="text-lg font-semibold mb-1">📍 {{ location.name }}</h2>
                 {% if location.description %}
-                    <!-- Ссылки в описании открываются в новой вкладке; [&_a]:underline подчёркивает их -->
-                    <p class="text-stone-600 dark:text-stone-300 text-sm mb-3 [&_a]:underline">{{ location.description|urlize_new_tab|linebreaksbr }}</p>
+                    <!-- Ссылки на фото Google Maps показаны номерами; все ссылки открываются в новой вкладке. -->
+                    <p class="text-stone-600 dark:text-stone-300 text-sm mb-3 [&_a]:underline">{{ location.description|location_description_links|linebreaksbr }}</p>
                 {% endif %}
 
                 <!-- Теги типов пинов: у каждого типа свой цвет и эмодзи -->
