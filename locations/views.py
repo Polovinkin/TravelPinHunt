@@ -62,6 +62,11 @@ def home(request):
             Q(cities__locations__isnull=False) | Q(cities__note__gt=""),
         ).distinct()
 
+        # Для стран тоже сразу открываем точное уникальное совпадение.
+        exact_countries = list(countries_found.filter(name__iexact=query)[:2])
+        if len(exact_countries) == 1:
+            return redirect(exact_countries[0].url)
+
         results = {
             "cities": cities,
             "countries": countries_found,
