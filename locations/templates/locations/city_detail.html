@@ -1,5 +1,5 @@
 {% extends "locations/base.html" %}
-{% load static %}
+{% load static location_links %}
 
 {% block title %}Travel pins in {{ city.name }}{% if not city.is_country_landing_page %}, {{ city.country.name }}{% endif %} — TravelPinHunt{% endblock %}
 
@@ -102,7 +102,7 @@
     {% if city.note %}
         <section class="mb-8 rounded-xl border border-yellow-300 bg-yellow-50 p-5 text-stone-700 dark:border-yellow-700/70 dark:bg-yellow-950/20 dark:text-stone-200" aria-labelledby="city-note-title">
             <h2 id="city-note-title" class="mb-2 text-base font-semibold text-yellow-800 dark:text-yellow-200">📝 Note for collectors</h2>
-            <div class="text-sm leading-6 [&_a]:underline">{{ city.note|urlize|linebreaksbr }}</div>
+            <div class="text-sm leading-6 [&_a]:underline">{{ city.note|urlize_new_tab|linebreaksbr }}</div>
         </section>
     {% endif %}
 
@@ -133,8 +133,8 @@
 
                 <h2 class="text-lg font-semibold mb-1">📍 {{ location.name }}</h2>
                 {% if location.description %}
-                    <!-- urlize превращает голые ссылки в кликабельные <a>-теги; [&_a]:underline подчёркивает их -->
-                    <p class="text-stone-600 dark:text-stone-300 text-sm mb-3 [&_a]:underline">{{ location.description|urlize|linebreaksbr }}</p>
+                    <!-- Ссылки в описании открываются в новой вкладке; [&_a]:underline подчёркивает их -->
+                    <p class="text-stone-600 dark:text-stone-300 text-sm mb-3 [&_a]:underline">{{ location.description|urlize_new_tab|linebreaksbr }}</p>
                 {% endif %}
 
                 <!-- Теги типов пинов: у каждого типа свой цвет и эмодзи -->
