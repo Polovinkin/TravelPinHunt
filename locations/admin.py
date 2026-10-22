@@ -194,7 +194,7 @@ class CityAdminForm(forms.ModelForm):
         }
         widgets = {
             "name": forms.TextInput(attrs={"autocomplete": "off"}),
-            "youtube_walk_url": forms.URLInput(attrs={"autocomplete": "off"}),
+            "youtube_walk_url": forms.URLInput(attrs={"autocomplete": "off", "style": "width: 50%; max-width: 45em;"}),
             "note": forms.Textarea(attrs={"rows": 6, "cols": 80, "style": "width: 35rem; max-width: 100%;"}),
         }
 
