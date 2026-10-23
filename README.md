@@ -3,9 +3,9 @@ Source code for [TravelPinHunt.com](https://travelpinhunt.com)
 
 <img width="2000" height="400" alt="image" src="https://github.com/user-attachments/assets/fe0b28e7-6929-4658-87ee-4691e1dba8e0" />
 
-### Разработка: сборка Tailwind CSS
+### Заметка по разработке: сборка Tailwind CSS
 
-После изменения Tailwind-классов нужно пересобирать и коммитить обновленный `static/tailwind.css` следующей командой:
+После изменения Tailwind-классов нужно пересобирать и закоммитить обновленный `static/tailwind.css` следующей командой:
 
 ```bash
 npm --prefix tools/tailwind run build:css
